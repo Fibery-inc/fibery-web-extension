@@ -1,8 +1,17 @@
-require("dotenv").config({ silent: true });
+require("dotenv").config();
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const process = require("process");
-const { REMOTE_HOST = ``, FIBERY_AUTH_TOKEN } = process.env;
+const { REMOTE_HOST, FIBERY_AUTH_TOKEN } = process.env;
+if (!REMOTE_HOST) {
+  throw new Error(`Please specify REMOTE_HOST env variable`);
+}
 module.exports = function (app) {
+  app.get("/api/users/me/workspaces", async (req, res) => {
+    res.json({
+      email: "test@test.com",
+      workspaces: [{ name: req.headers.host }],
+    });
+  });
   app.use(
     "/api",
     createProxyMiddleware({
