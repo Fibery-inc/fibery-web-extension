@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "name": "Fibery web extension",
   "icons": {
-    "128": "logo192.png",
-    "32": "logo192.png"
+    "128": "favicon.png",
+    "32": "favicon.png"
   },
   "browser_action": {
     "default_icon": {
-      "128": "logo192.png",
-      "32": "logo192.png"
+      "128": "favicon.png",
+      "32": "favicon.png"
     },
     "default_popup": "index.html",
     "default_title": "Fibery web extension"

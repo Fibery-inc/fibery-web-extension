@@ -6,7 +6,7 @@ if (!REMOTE_HOST) {
   throw new Error(`Please specify REMOTE_HOST env variable`);
 }
 module.exports = function (app) {
-  app.get("/api/users/me/workspaces", async (req, res) => {
+  app.get("/api/users/me", async (req, res) => {
     res.json({
       email: "test@test.com",
       workspaces: [{ name: req.headers.host }],

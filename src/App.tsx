@@ -17,8 +17,12 @@ function App() {
   return (
     <div className={styles.app}>
       {error ? JSON.stringify(error) : null}
+      <div className={styles.login}>
+        {me.email}
+      </div>
       <label htmlFor="workspaces">
-        workspaces
+        workspaces:
+        <br />
         <select name="workspaces" id="workspaces">
           {me.workspaces.map(({ name }) => (
             <option value={name}>{name}</option>
