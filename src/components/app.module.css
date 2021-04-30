@@ -1,12 +1,16 @@
 .app {
   background: white;
   min-width: 400px;
-  min-height: 400px;
+  min-height: 380px;
   padding: 20px;
 }
 
 .login {
   display: flex;
   justify-content: flex-end;
-  padding: 10px;
+  padding:0 10px;
+}
+
+.field {
+  padding-bottom: 10px;
 }
