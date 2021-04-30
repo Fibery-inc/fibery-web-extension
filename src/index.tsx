@@ -14,6 +14,24 @@ import App from "./components/app";
 //     },
 //   });
 // });
+// @ts-ignore
+if (typeof chrome !== "undefined" && chrome.tabs && chrome.tabs.executeScript) {
+  // @ts-ignore
+  chrome.tabs.executeScript(
+    {
+      code:
+        "(() => {return { selection: window.getSelection().toString(), title: document.title, url: document.location.toString()};})();",
+    },
+    function ([{ selection = "", title, url }]: any) {
+      // @ts-ignore
+      window.fiberyState = {
+        selection,
+        title,
+        url,
+      };
+    }
+  );
+}
 
 ReactDOM.render(
   <React.StrictMode>

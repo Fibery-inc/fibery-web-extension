@@ -57,11 +57,26 @@ function TypesSelect({
   );
 }
 
+function getDefaultDescription() {
+  const state = (window as any).fiberyState as any;
+  if (!state) {
+    return "";
+  }
+  return `${state?.selection}
+  
+[${state?.title}](${state?.url})
+`;
+}
+
 function Form({ me }: { me: any }) {
   const [currentWorkspace, setCurrentWorkspace] = useState<string>();
   const [currentType, setCurrentType] = useState<string>();
-  const [currentName, setCurrentName] = useState<string>("");
-  const [currentDescription, setCurrentDescription] = useState<string>("");
+  const [currentName, setCurrentName] = useState<string>(
+    ((window as any).fiberyState as any)?.title || ""
+  );
+  const [currentDescription, setCurrentDescription] = useState<string>(
+    getDefaultDescription()
+  );
   const [currentSchema, setCurrentSchema] = useState<any>();
   const { mutate: createEntity } = useCreateEntity();
   return (
