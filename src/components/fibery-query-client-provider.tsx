@@ -1,18 +1,10 @@
-import { QueryClient, QueryClientProvider /*setLogger*/ } from "react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient();
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-// const noopPrint = () => {};
-// setLogger({
-//   log: noopPrint,
-//   error: noopPrint,
-//   warn: noopPrint,
-// });
-
 queryClient.setDefaultOptions({
   queries: {
-    retry: process.env.NODE_ENV !== `test`,
+    retry: 0,
   },
 });
 

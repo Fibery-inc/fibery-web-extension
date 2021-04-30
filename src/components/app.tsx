@@ -181,6 +181,13 @@ function Form({ me }: { me: any }) {
 }
 
 function getContent({ me, error }: { me: any; error: any }) {
+  if (error && error.code === 401) {
+    return (
+      <a rel="noreferrer" target="_blank" href="https://fibery.io/login">
+        Please login to fibery
+      </a>
+    );
+  }
   if (error) {
     return error.message;
   }
