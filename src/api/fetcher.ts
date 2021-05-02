@@ -5,6 +5,7 @@ import {
   executeCommands,
   updateDocument,
 } from "./api";
+import { getLink } from "./getLink";
 import { useQuery, useMutation } from "react-query";
 
 export function useMe() {
@@ -51,7 +52,7 @@ const createEntityCommands = ({
 
 export function useCreateEntity() {
   const { mutate } = useMutation(
-    ({
+    async ({
       host,
       entityName,
       description,
@@ -73,47 +74,48 @@ export function useCreateEntity() {
           .trim()
           .endsWith("description");
       });
-      return executeCommands({
+      const [{ result: entity }] = (await executeCommands({
         host,
         commands: createEntityCommands({ typeId, entityName, schema }),
-      }).then(([{ result }]: any) => {
-        if (result && descriptionField) {
-          return executeCommands({
-            host,
-            commands: [
-              {
-                command: "fibery.entity/query",
-                args: {
-                  query: {
-                    "q/from": type["fibery/name"],
-                    "q/select": [
-                      "fibery/id",
-                      {
-                        [descriptionField["fibery/name"]]: [
-                          "Collaboration~Documents/secret",
-                        ],
-                      },
-                    ],
-                    "q/where": ["=", ["fibery/id"], "$id"],
-                    "q/limit": 1,
-                  },
-                  params: { $id: result["fibery/id"] },
+      })) as any;
+      if (!entity) {
+        throw new Error("Could not create entity");
+      }
+      if (descriptionField) {
+        const [{ result: secrets }] = (await executeCommands({
+          host,
+          commands: [
+            {
+              command: "fibery.entity/query",
+              args: {
+                query: {
+                  "q/from": type["fibery/name"],
+                  "q/select": [
+                    "fibery/id",
+                    {
+                      [descriptionField["fibery/name"]]: [
+                        "Collaboration~Documents/secret",
+                      ],
+                    },
+                  ],
+                  "q/where": ["=", ["fibery/id"], "$id"],
+                  "q/limit": 1,
                 },
+                params: { $id: entity["fibery/id"] },
               },
-            ],
-          }).then(([{ result }]: any) => {
-            if (result) {
-              const secret =
-                result[0][descriptionField["fibery/name"]][
-                  "Collaboration~Documents/secret"
-                ];
-              return updateDocument({ host, content: description, secret });
-            }
-            return {};
-          });
+            },
+          ],
+        })) as any;
+        if (!secrets) {
+          throw new Error("Could not save description");
         }
-        return {};
-      });
+        const secret =
+          secrets[0][descriptionField["fibery/name"]][
+            "Collaboration~Documents/secret"
+          ];
+        await updateDocument({ host, content: description, secret });
+      }
+      return { entity, linkToEntity: getLink({ host, entity, type }) };
     }
   );
   return { mutate };

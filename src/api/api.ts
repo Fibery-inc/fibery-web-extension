@@ -1,11 +1,12 @@
 import { apiCall } from "./api-call";
+import { getHttpProtocol } from "./getHttpProtocol";
 
 const meUrl = `${process.env.REACT_APP_HOST || ""}/api/users/me`;
+const getBaseApiUrl = (host: string) => `${getHttpProtocol()}${host}/api/`;
 
-const getProtocol = () =>
-  window.location.protocol !== "http:" ? "https://" : "http://";
-const getCommandApiUrl = (host: string) =>
-  `${getProtocol()}${host}/api/commands`;
+const getCommandApiUrl = (host: string) => {
+  return `${getBaseApiUrl(host)}commands`;
+};
 
 export const getMe = () => {
   return apiCall(meUrl, { method: "GET" });
@@ -20,7 +21,7 @@ export function updateDocument({
   content: string;
   secret: string;
 }) {
-  return apiCall(`${getProtocol()}${host}/api/documents/${secret}`, {
+  return apiCall(`${getBaseApiUrl(host)}documents/${secret}`, {
     method: "PUT",
     body: {
       content,

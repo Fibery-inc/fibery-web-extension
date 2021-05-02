@@ -79,7 +79,13 @@ function getDefaultDescription() {
     .join("\n");
 }
 
-function Form({ me }: { me: any }) {
+function Form({
+  me,
+  onSave,
+}: {
+  me: any;
+  onSave: ({ linkToEntity }: { linkToEntity: string }) => void;
+}) {
   const [currentWorkspace, setCurrentWorkspace] = useState<string>();
   const [currentType, setCurrentType] = useState<string>();
   const [currentName, setCurrentName] = useState<string>(
@@ -89,104 +95,134 @@ function Form({ me }: { me: any }) {
     getDefaultDescription()
   );
   const [currentSchema, setCurrentSchema] = useState<any>();
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const { mutate: createEntity } = useCreateEntity();
   const disabled = !Boolean(
     currentType && currentWorkspace && currentName && currentSchema
   );
   return (
-    <form
-      className="grid grid-cols-1 gap-2"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (currentType && currentWorkspace && currentName && currentSchema) {
-          createEntity(
-            {
-              host: currentWorkspace,
-              typeId: currentType,
-              entityName: currentName,
-              schema: currentSchema,
-              description: currentDescription,
-            },
-            {
-              onSuccess() {
-                setCurrentName("");
-                setCurrentDescription("");
-              },
-            }
-          );
-        }
-      }}
-    >
-      <label className="block px-4" htmlFor="name">
-        <span className="text-gray-700">Name</span>
-        <input
-          className="mt-1 block w-full focus:ring-black border-black"
-          value={currentName}
-          onChange={(e) => setCurrentName(e.currentTarget.value)}
-          type="text"
-          name="name"
-          id="name"
-        />
-      </label>
-      <label className="block px-4" htmlFor="description">
-        <span className="text-gray-700">Description</span>
-        <textarea
-          className="mt-1 block w-full focus:ring-black border-black"
-          value={currentDescription}
-          onChange={(e) => {
-            setCurrentDescription(e.currentTarget.value);
-          }}
-          name="description"
-          id="description"
-          rows={3}
-        />
-      </label>
-      <div className="block px-4">
-        <button
-          title={disabled ? "Please select workspace and type" : undefined}
-          className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-900 bg-gray-900 hover:bg-gray-700 text-white text-lg leading-6 py-2 px-4 border border-transparent  focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900 focus:outline-none"
-          type="submit"
-          disabled={disabled}
-        >
-          Create Entity
-        </button>
-      </div>
-
-      <label
-        className="flex gap-x-4 justify-between px-4 border-t-2"
-        htmlFor="workspace"
+    <>
+      <div
+        className={"place-self-center absolute" + (submitting ? "" : " hidden")}
       >
-        <span className="flex text-gray-700 flex-shrink-0 items-center">
-          Workspace
-        </span>
-        <select
-          className="min-w-0 w-full mt-0 px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
-          onChange={(e) => setCurrentWorkspace(e.currentTarget.value)}
-          value={currentWorkspace}
-          name="workspace"
-          id="workspace"
-        >
-          <option>Select Workspace</option>
-          {me.workspaces.map(({ name }: { name: any }) => (
-            <option key={name} value={name}>
-              {name}
-            </option>
-          ))}
-        </select>
-      </label>
-      <TypesSelect
-        value={currentType}
-        onChange={({ typeId, schema }) => {
-          setCurrentType(typeId);
-          setCurrentSchema(schema);
+        <div className={styles.logo + " " + styles.loader} />
+      </div>
+      <form
+        className={"grid grid-cols-1 gap-2" + (submitting ? " opacity-10" : "")}
+        onSubmit={(e) => {
+          setSubmitting(true);
+          e.preventDefault();
+          if (currentType && currentWorkspace && currentName && currentSchema) {
+            createEntity(
+              {
+                host: currentWorkspace,
+                typeId: currentType,
+                entityName: currentName,
+                schema: currentSchema,
+                description: currentDescription,
+              },
+              {
+                onSuccess({ linkToEntity }) {
+                  onSave({ linkToEntity });
+                  setCurrentName("");
+                  setCurrentDescription("");
+                },
+                onSettled() {
+                  setSubmitting(false);
+                },
+              }
+            );
+          }
         }}
-        host={currentWorkspace}
-      />
-    </form>
+      >
+        <label className="block px-4" htmlFor="name">
+          <span className="text-gray-700">Name</span>
+          <input
+            className="mt-1 block w-full focus:ring-black border-black"
+            value={currentName}
+            onChange={(e) => setCurrentName(e.currentTarget.value)}
+            type="text"
+            name="name"
+            id="name"
+          />
+        </label>
+        <label className="block px-4" htmlFor="description">
+          <span className="text-gray-700">Description</span>
+          <textarea
+            className="mt-1 block w-full focus:ring-black border-black"
+            value={currentDescription}
+            onChange={(e) => {
+              setCurrentDescription(e.currentTarget.value);
+            }}
+            name="description"
+            id="description"
+            rows={3}
+          />
+        </label>
+        <div className="block px-4">
+          <button
+            title={disabled ? "Please select workspace and type" : undefined}
+            className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-900 bg-gray-900 hover:bg-gray-700 text-white text-lg leading-6 py-2 px-4 border border-transparent  focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900 focus:outline-none"
+            type="submit"
+            disabled={disabled}
+          >
+            Create Entity
+          </button>
+        </div>
+
+        <label
+          className="flex gap-x-4 justify-between px-4 border-t-2 pt-2"
+          htmlFor="workspace"
+        >
+          <span className="flex text-gray-700 flex-shrink-0 items-center">
+            Workspace
+          </span>
+          <select
+            className="min-w-0 w-full mt-0 px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
+            onChange={(e) => setCurrentWorkspace(e.currentTarget.value)}
+            value={currentWorkspace}
+            name="workspace"
+            id="workspace"
+          >
+            <option>Select Workspace</option>
+            {me.workspaces.map(({ name }: { name: any }) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <TypesSelect
+          value={currentType}
+          onChange={({ typeId, schema }) => {
+            setCurrentType(typeId);
+            setCurrentSchema(schema);
+          }}
+          host={currentWorkspace}
+        />
+        <div className="border-t-2 border-gray-100 flex justify-end">
+          <div className="px-4 py-2">{me.email}</div>
+        </div>
+      </form>
+    </>
   );
 }
 
-function getContent({ me, error }: { me: any; error: any }) {
+function Content({ me, error }: { me: any; error: any }) {
+  const [link, setLink] = useState<string>();
+  if (link) {
+    return (
+      <a
+        rel="noreferrer"
+        href={link}
+        target="_blank"
+        className="block place-self-center text-center text-blue-700 hover:opacity-80"
+      >
+        <div className={styles.logo + " inline-block w-24 h-24"} />
+        <span className="block">Open Entity to Fibery</span>
+      </a>
+    );
+  }
   if (error && error.code === 401) {
     return (
       <a
@@ -211,12 +247,12 @@ function getContent({ me, error }: { me: any; error: any }) {
     );
   }
   return (
-    <>
-      <Form me={me} />
-      <div className="border-t-2 border-gray-100 flex justify-end">
-        <div className="px-4 py-2">{me.email}</div>
-      </div>
-    </>
+    <Form
+      onSave={({ linkToEntity }) => {
+        setLink(linkToEntity);
+      }}
+      me={me}
+    />
   );
 }
 
@@ -226,9 +262,9 @@ function App() {
     <div
       className={`${
         process.env.NODE_ENV === "development" ? "border border-black" : ""
-      } pt-4 mx-auto ${styles.app} grid`}
+      } pt-4 mx-auto ${styles.app} grid relative`}
     >
-      {getContent({ me, error })}
+      <Content me={me} error={error} />
     </div>
   );
 }
