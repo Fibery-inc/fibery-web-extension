@@ -138,7 +138,7 @@ function Form({
         <label className="block px-4" htmlFor="name">
           <span className="text-gray-700">Name</span>
           <input
-            className="mt-1 block w-full focus:ring-black border-black"
+            className="mt-1 block w-full focus:ring-black focus:border-black"
             value={currentName}
             onChange={(e) => setCurrentName(e.currentTarget.value)}
             type="text"
@@ -149,7 +149,7 @@ function Form({
         <label className="block px-4" htmlFor="description">
           <span className="text-gray-700">Description</span>
           <textarea
-            className="mt-1 block w-full focus:ring-black border-black"
+            className="mt-1 block w-full focus:ring-black focus:border-black"
             value={currentDescription}
             onChange={(e) => {
               setCurrentDescription(e.currentTarget.value);

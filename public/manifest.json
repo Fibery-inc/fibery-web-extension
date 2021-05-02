@@ -1,12 +1,12 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "version": "1.0.0",
   "name": "Fibery web extension",
   "icons": {
     "128": "favicon.png",
     "32": "favicon.png"
   },
-  "action": {
+  "browser_action": {
     "default_icon": {
       "128": "favicon.png",
       "32": "favicon.png"
@@ -14,10 +14,8 @@
     "default_popup": "index.html",
     "default_title": "Fibery web extension"
   },
-  "host_permissions": [
-    "https://*.fibery.io/*"
-  ],
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "https://*.fibery.io/*"
   ]
 }
