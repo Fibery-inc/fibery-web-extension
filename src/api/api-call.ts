@@ -40,7 +40,6 @@ export async function apiCall<T>(
     if (error instanceof TypeError) {
       throw new AppError("Network error. Check your internet connection.");
     }
-    debugger;
     throw new Error(unknownErrorMessage);
   }
 }
