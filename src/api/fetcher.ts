@@ -1,3 +1,4 @@
+import { useQuery, useMutation } from "react-query";
 import {
   getMe,
   schemaPayload,
@@ -5,17 +6,23 @@ import {
   executeCommands,
   updateDocument,
 } from "./api";
+import { setValue } from "./storage.api";
 import { getLink } from "./getLink";
-import { useQuery, useMutation } from "react-query";
+import { User } from "../types";
 
 export function useMe() {
-  return useQuery(["me"], () => getMe());
+  return useQuery<User>(["me"], () => getMe());
 }
 
 export function useSchema(host?: string) {
   return useQuery(
     [...schemaPayload, host],
-    () => (host ? getSchema(host) : Promise.resolve()),
+    () =>
+      host
+        ? getSchema(host).then((res: any) => {
+            return res[0].result;
+          })
+        : Promise.resolve(),
     {
       enabled: Boolean(host),
     }
@@ -74,6 +81,8 @@ export function useCreateEntity() {
           .trim()
           .endsWith("description");
       });
+      await setValue("lastUsedType", typeId);
+      await setValue("lastUsedWorkspace", host);
       const [{ result: entity }] = (await executeCommands({
         host,
         commands: createEntityCommands({ typeId, entityName, schema }),

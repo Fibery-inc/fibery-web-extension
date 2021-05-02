@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./app.module.css";
 import { useCreateEntity, useMe, useSchema } from "../api/fetcher";
+import { User } from "../types";
 
 function getTypes(schema: any) {
   return schema["fibery/types"]
@@ -16,35 +17,33 @@ function getTypes(schema: any) {
 }
 
 function TypesSelect({
-  host,
   onChange,
   value,
+  schema,
 }: {
-  host?: string;
-  onChange: ({ typeId, schema }: { typeId: string; schema: any }) => void;
+  onChange: ({ typeId }: { typeId: string }) => void;
   value?: string;
+  schema: any;
 }) {
-  const { data } = useSchema(host);
   return (
     <label className="flex gap-x-4 justify-between px-4 pb-2" htmlFor="type">
       <span className="flex flex-shrink-0 items-center text-gray-700">
         Type
       </span>
-      {data ? (
+      {schema ? (
         <select
           className="min-w-0 w-full mt-0 px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
           value={value}
           onChange={(e) =>
             onChange({
               typeId: e.currentTarget.value,
-              schema: (data as any)[0].result,
             })
           }
           name="type"
           id="type"
         >
           <option>Select Type</option>
-          {getTypes((data as any)[0].result).map((type: any) => {
+          {getTypes(schema).map((type: any) => {
             return (
               <option key={type.id} value={type.id}>
                 {type.name}
@@ -83,22 +82,26 @@ function Form({
   me,
   onSave,
 }: {
-  me: any;
+  me: User;
   onSave: ({ linkToEntity }: { linkToEntity: string }) => void;
 }) {
-  const [currentWorkspace, setCurrentWorkspace] = useState<string>();
-  const [currentType, setCurrentType] = useState<string>();
+  const [currentWorkspace, setCurrentWorkspace] = useState<string | undefined>(
+    me.lastUsedWorkspace
+  );
+  const [currentType, setCurrentType] = useState<string | undefined>(
+    me.lastUsedType
+  );
   const [currentName, setCurrentName] = useState<string>(
     ((window as any).fiberyState as any)?.title || ""
   );
   const [currentDescription, setCurrentDescription] = useState<string>(
     getDefaultDescription()
   );
-  const [currentSchema, setCurrentSchema] = useState<any>();
+  const { data: schema } = useSchema(currentWorkspace);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { mutate: createEntity } = useCreateEntity();
   const disabled = !Boolean(
-    currentType && currentWorkspace && currentName && currentSchema
+    currentType && currentWorkspace && currentName && schema
   );
   return (
     <>
@@ -112,13 +115,13 @@ function Form({
         onSubmit={(e) => {
           setSubmitting(true);
           e.preventDefault();
-          if (currentType && currentWorkspace && currentName && currentSchema) {
+          if (currentType && currentWorkspace && currentName && schema) {
             createEntity(
               {
                 host: currentWorkspace,
                 typeId: currentType,
                 entityName: currentName,
-                schema: currentSchema,
+                schema,
                 description: currentDescription,
               },
               {
@@ -194,11 +197,10 @@ function Form({
         </label>
         <TypesSelect
           value={currentType}
-          onChange={({ typeId, schema }) => {
+          schema={schema}
+          onChange={({ typeId }) => {
             setCurrentType(typeId);
-            setCurrentSchema(schema);
           }}
-          host={currentWorkspace}
         />
         <div className="border-t-2 border-gray-100 flex justify-end">
           <div className="px-4 py-2">{me.email}</div>
