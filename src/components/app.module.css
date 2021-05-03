@@ -1,6 +1,6 @@
 .app {
   width: 360px;
-  min-height: 414px;
+  min-height: 280px;
 }
 
 .logo {
@@ -32,8 +32,8 @@
 }
 
 .loader {
-  width: 4.6rem;
-  height: 4.6rem;
+  width: 3.6rem;
+  height: 3.6rem;
   animation: pulse 1.2s infinite;
   display: block;
 }

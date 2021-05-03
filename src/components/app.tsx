@@ -162,6 +162,7 @@ function Form({
           }
         }}
       >
+        {true ? <div className="block p-2 px-4 bg-yellow-50 text-yellow-500">Some creation error</div> : null}
         <label className="block px-4" htmlFor="name">
           <span className="text-gray-500">Name</span>
           <input
@@ -189,7 +190,7 @@ function Form({
         <div className="block px-4">
           <button
             title={disabled ? "Please select workspace and type" : undefined}
-            className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
+            className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-200 focus:outline-none"
             type="submit"
             disabled={disabled}
           >
@@ -238,17 +239,29 @@ function Content({ me, error }: { me: any; error: any }) {
   const [link, setLink] = useState<string>();
   if (link) {
     return (
-      <a
-        rel="noreferrer"
-        href={link}
-        target="_blank"
-        className="block place-self-center text-center text-blue-700 hover:opacity-80"
-      >
-        <div className={styles.logo + " inline-block w-24 h-24"} />
-        <span className="block">Open Entity to Fibery</span>
-      </a>
+      <div className="place-self-center">
+        <a
+          rel="noreferrer"
+          href={link}
+          target="_blank"
+          className="block place-self-center text-center text-blue-700 hover:opacity-80"
+          >
+            <button
+              className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
+              type="submit"
+            >
+              Open entity in Fibery
+            </button>
+          </a>
+
+        <div className="flex justify-center">
+          <div className="px-4 py-2 text-gray-500"><button onClick={()=> setLink('')} >Go back</button></div>
+        </div>
+
+      </div>
     );
   }
+  //if (!me || true) {
   if (error && error.code === 401) {
     return (
       <a
@@ -257,8 +270,15 @@ function Content({ me, error }: { me: any; error: any }) {
         target="_blank"
         className="block place-self-center text-center text-blue-700 hover:opacity-80"
       >
-        <div className={styles.logo + " inline-block w-24 h-24"} />
-        <span className="block">Please login to Fibery</span>
+        <div className={styles.logo + " inline-block w-16 h-16"} />
+        <div className="p-4">
+        <button
+            className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
+            type="submit"
+        >
+          Please login to Fibery
+        </button>
+        </div>
       </a>
     );
   }
@@ -288,7 +308,7 @@ function App() {
     <div
       className={`${
         process.env.NODE_ENV === "development" ? "border border-black" : ""
-      } pt-4 mx-auto ${styles.app} grid relative`}
+      } mx-auto ${styles.app} grid relative`}
     >
       <Content me={me} error={error} />
     </div>
