@@ -46,7 +46,10 @@ function TypesSelect({
   schema: any;
 }) {
   return (
-    <label className="flex gap-x-4 justify-between border-gray-100 px-4" htmlFor="type">
+    <label
+      className="flex gap-x-4 justify-between border-gray-100 px-4"
+      htmlFor="type"
+    >
       <span className="flex flex-shrink-0 items-center text-gray-500">
         Type
       </span>
@@ -162,7 +165,11 @@ function Form({
           }
         }}
       >
-        {true ? <div className="block p-2 px-4 -mb-4 bg-yellow-50 text-yellow-500">Some creation error</div> : null}
+        {true ? (
+          <div className="block p-2 px-4 -mb-4 bg-yellow-50 text-yellow-500">
+            Some creation error
+          </div>
+        ) : null}
         <label className="block px-4 pt-4" htmlFor="name">
           <span className="text-gray-500">Name</span>
           <input
@@ -245,19 +252,20 @@ function Content({ me, error }: { me: any; error: any }) {
           href={link}
           target="_blank"
           className="block place-self-center text-center text-blue-700 hover:opacity-80"
+        >
+          <button
+            className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
+            type="submit"
           >
-            <button
-              className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
-              type="submit"
-            >
-              Open entity in Fibery
-            </button>
-          </a>
+            Open entity in Fibery
+          </button>
+        </a>
 
         <div className="flex justify-center">
-          <div className="px-4 py-2 text-gray-500"><button onClick={()=> setLink('')} >Go back</button></div>
+          <div className="px-4 py-2 text-gray-500">
+            <button onClick={() => setLink("")}>Go back</button>
+          </div>
         </div>
-
       </div>
     );
   }
@@ -272,12 +280,12 @@ function Content({ me, error }: { me: any; error: any }) {
       >
         <div className={styles.logo + " inline-block w-16 h-16"} />
         <div className="p-4">
-        <button
+          <button
             className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
             type="submit"
-        >
-          Please login to Fibery
-        </button>
+          >
+            Please login to Fibery
+          </button>
         </div>
       </a>
     );
