@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import styles from "./app.module.css";
 import { useCreateEntity, useMe, useSchema } from "../api/fetcher";
 import { User } from "../types";
@@ -112,6 +112,7 @@ function Form({
   me: User;
   onSave: ({ linkToEntity }: { linkToEntity: string }) => void;
 }) {
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
   const [currentWorkspace, setCurrentWorkspace] = useState<string | undefined>(
     me.lastUsedWorkspace
   );
@@ -184,6 +185,15 @@ function Form({
         <label className="block px-4" htmlFor="description">
           <span className="text-gray-500">Description</span>
           <textarea
+            onKeyPress={(e) => {
+              if (
+                e.code.toLowerCase() === "enter" &&
+                !e.shiftKey &&
+                submitButtonRef.current
+              ) {
+                submitButtonRef.current.click();
+              }
+            }}
             className="mt-1 block w-full border-gray-200 rounded text-sm focus:ring focus:ring-offset-0 focus:border-gray-400 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
             value={currentDescription}
             onChange={(e) => {
@@ -196,6 +206,7 @@ function Form({
         </label>
         <div className="block px-4 py-1">
           <button
+            ref={submitButtonRef}
             title={disabled ? "Please select workspace and type" : undefined}
             className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-200 focus:outline-none"
             type="submit"
