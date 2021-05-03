@@ -187,7 +187,7 @@ function Form({
             rows={3}
           />
         </label>
-        <div className="block px-4">
+        <div className="block px-4 py-1">
           <button
             title={disabled ? "Please select workspace and type" : undefined}
             className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-200 focus:outline-none"
