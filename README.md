@@ -12,7 +12,7 @@ FIBERY_AUTH_TOKEN=<auth-token>
 REMOTE_HOST=https://my-account.fibery.io
 ```
 
-2. Run `yarn start` and access UI normally: `http://localhost:3000/`
+3. Run `yarn start` and access UI normally: `http://localhost:3000/`
 
 
 ## how to build extension
