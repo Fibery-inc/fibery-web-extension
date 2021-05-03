@@ -113,6 +113,7 @@ function Form({
   onSave: ({ linkToEntity }: { linkToEntity: string }) => void;
 }) {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const [error, setError] = useState<string>();
   const [currentWorkspace, setCurrentWorkspace] = useState<string | undefined>(
     me.lastUsedWorkspace
   );
@@ -141,6 +142,7 @@ function Form({
       <form
         className={"grid grid-cols-1 gap-2" + (submitting ? " opacity-10" : "")}
         onSubmit={(e) => {
+          setError("");
           setSubmitting(true);
           e.preventDefault();
           if (currentType && currentWorkspace && currentName && schema) {
@@ -158,6 +160,12 @@ function Form({
                   setCurrentName("");
                   setCurrentDescription("");
                 },
+                onError(error: unknown) {
+                  if (error instanceof Error) {
+                    return setError(error.message);
+                  }
+                  setError("Oops, something has gone wrong.");
+                },
                 onSettled() {
                   setSubmitting(false);
                 },
@@ -166,9 +174,9 @@ function Form({
           }
         }}
       >
-        {true ? (
+        {error ? (
           <div className="block p-2 px-4 -mb-4 bg-yellow-50 text-yellow-600">
-            Some creation error
+            {error}
           </div>
         ) : null}
         <label className="block px-4 pt-4" htmlFor="name">
