@@ -46,13 +46,13 @@ function TypesSelect({
   schema: any;
 }) {
   return (
-    <label className="flex gap-x-4 justify-between px-4 pb-2" htmlFor="type">
-      <span className="flex flex-shrink-0 items-center text-gray-700">
+    <label className="flex gap-x-4 justify-between border-gray-100 px-4" htmlFor="type">
+      <span className="flex flex-shrink-0 items-center text-gray-500">
         Type
       </span>
       {schema ? (
         <select
-          className="min-w-0 w-full mt-0 px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
+          className="min-w-0 w-60 text-sm mt-0 border-0 rounded focus:ring-0 focus:ring-offset-0 focus:outline-none"
           value={value}
           onChange={(e) =>
             onChange({
@@ -78,7 +78,7 @@ function TypesSelect({
       ) : (
         <select
           disabled
-          className="disabled:opacity-50 min-w-0 w-full mt-0 px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
+          className="disabled:opacity-50 min-w-0 w-60 text-sm mt-0 border-0 rounded focus:ring-0 focus:ring-offset-0 focus:outline-none"
         >
           <option>Select Type</option>
         </select>
@@ -163,9 +163,9 @@ function Form({
         }}
       >
         <label className="block px-4" htmlFor="name">
-          <span className="text-gray-700">Name</span>
+          <span className="text-gray-500">Name</span>
           <input
-            className="mt-1 block w-full focus:ring-black focus:border-black"
+            className="mt-1 block w-full border-gray-200 p-2 rounded text-sm focus:ring focus:ring-offset-0 focus:border-gray-400 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
             value={currentName}
             onChange={(e) => setCurrentName(e.currentTarget.value)}
             type="text"
@@ -174,9 +174,9 @@ function Form({
           />
         </label>
         <label className="block px-4" htmlFor="description">
-          <span className="text-gray-700">Description</span>
+          <span className="text-gray-500">Description</span>
           <textarea
-            className="mt-1 block w-full focus:ring-black focus:border-black"
+            className="mt-1 block w-full border-gray-200 rounded text-sm focus:ring focus:ring-offset-0 focus:border-gray-400 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
             value={currentDescription}
             onChange={(e) => {
               setCurrentDescription(e.currentTarget.value);
@@ -189,7 +189,7 @@ function Form({
         <div className="block px-4">
           <button
             title={disabled ? "Please select workspace and type" : undefined}
-            className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-900 bg-gray-900 hover:bg-gray-700 text-white text-lg leading-6 py-2 px-4 border border-transparent  focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900 focus:outline-none"
+            className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
             type="submit"
             disabled={disabled}
           >
@@ -198,14 +198,14 @@ function Form({
         </div>
 
         <label
-          className="flex gap-x-4 justify-between px-4 border-t-2 pt-2"
+          className="flex gap-x-4 justify-between px-4 border-t border-gray-100 pt-2"
           htmlFor="workspace"
         >
-          <span className="flex text-gray-700 flex-shrink-0 items-center">
+          <span className="flex text-gray-500 flex-shrink-0 items-center">
             Workspace
           </span>
           <select
-            className="min-w-0 w-full mt-0 px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black"
+            className="min-w-0 w-60 text-sm mt-0 border-0 focus:ring-0 focus:ring-offset-0 focus:outline-none"
             onChange={(e) => setCurrentWorkspace(e.currentTarget.value)}
             value={currentWorkspace}
             name="workspace"
@@ -226,7 +226,7 @@ function Form({
             setCurrentType(typeId);
           }}
         />
-        <div className="border-t-2 border-gray-100 flex justify-end">
+        <div className="border-t border-gray-100 text-gray-500 flex justify-end">
           <div className="px-4 py-2">{me.email}</div>
         </div>
       </form>
