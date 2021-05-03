@@ -14,23 +14,43 @@ import App from "./components/app";
 //     },
 //   });
 // });
-// @ts-ignore
-if (typeof chrome !== "undefined" && chrome.tabs && chrome.tabs.executeScript) {
+
+async function getCurrentTab() {
+  let queryOptions = { active: true, currentWindow: true };
   // @ts-ignore
-  chrome.tabs.executeScript(
-    {
-      code:
-        "(() => {return { selection: window.getSelection().toString(), title: document.title, url: document.location.toString()};})();",
-    },
-    function ([{ selection = "", title, url }]: any) {
+  let [tab] = await chrome.tabs.query(queryOptions);
+  return tab;
+}
+
+if (
+  // @ts-ignore
+  typeof chrome !== "undefined" &&
+  // @ts-ignore
+  chrome.scripting &&
+  // @ts-ignore
+  chrome.scripting.executeScript
+) {
+  (async () => {
+    try {
+      const tab = await getCurrentTab();
       // @ts-ignore
-      window.fiberyState = {
-        selection,
-        title,
-        url,
-      };
+      const [{ result: tabData }] = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        function: () => {
+          return {
+            // @ts-ignore
+            selection: window?.getSelection()?.toString(),
+            title: document.title,
+            url: document.location.toString(),
+          };
+        },
+      });
+      // @ts-ignore
+      window.fiberyState = tabData;
+    } catch (e) {
+      console.error(e);
     }
-  );
+  })();
 }
 
 ReactDOM.render(
