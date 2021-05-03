@@ -4,16 +4,36 @@ import { useCreateEntity, useMe, useSchema } from "../api/fetcher";
 import { User } from "../types";
 
 function getTypes(schema: any) {
-  return schema["fibery/types"]
-    .filter((type: any) => {
-      return (
-        type["fibery/meta"]["fibery/domain?"] &&
-        type["fibery/name"] !== "fibery/user"
-      );
-    })
-    .map((type: any) => {
-      return { id: type["fibery/id"], name: type["fibery/name"] };
-    });
+  const typesByGroup: Array<{
+    groupLabel: string;
+    types: Array<{ name: string; id: string }>;
+  }> = [];
+  const indexByGroup: Record<string, number> = {};
+  let index = 0;
+  for (const type of schema["fibery/types"]) {
+    if (
+      type["fibery/meta"]["fibery/domain?"] &&
+      type["fibery/name"] !== "fibery/user" &&
+      !Boolean(type["fibery/meta"]["sync/source"])
+    ) {
+      const [groupLabel, name] = type["fibery/name"].split("/");
+      const typeOption = { id: type["fibery/id"], name };
+      const groupIndex = indexByGroup[groupLabel];
+      if (groupIndex !== undefined && typesByGroup[groupIndex]) {
+        typesByGroup[groupIndex].types.push(typeOption);
+      } else {
+        typesByGroup[index] = { groupLabel: groupLabel, types: [typeOption] };
+        indexByGroup[groupLabel] = index;
+        index++;
+      }
+    }
+  }
+  return typesByGroup;
+}
+
+function getWorkspaceName(host: string) {
+  const [name] = host.split(".");
+  return name;
 }
 
 function TypesSelect({
@@ -43,11 +63,15 @@ function TypesSelect({
           id="type"
         >
           <option>Select Type</option>
-          {getTypes(schema).map((type: any) => {
+          {getTypes(schema).map(({ groupLabel, types }) => {
             return (
-              <option key={type.id} value={type.id}>
-                {type.name}
-              </option>
+              <optgroup key={groupLabel} label={groupLabel}>
+                {types.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.name}
+                  </option>
+                ))}
+              </optgroup>
             );
           })}
         </select>
@@ -190,7 +214,7 @@ function Form({
             <option>Select Workspace</option>
             {me.workspaces.map(({ name }: { name: any }) => (
               <option key={name} value={name}>
-                {name}
+                {getWorkspaceName(name)}
               </option>
             ))}
           </select>
