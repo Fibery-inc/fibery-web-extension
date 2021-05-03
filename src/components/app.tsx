@@ -62,7 +62,7 @@ function TypesSelect({
           name="type"
           id="type"
         >
-          <option>Select Type</option>
+          <option value="">Select Type</option>
           {getTypes(schema).map(({ groupLabel, types }) => {
             return (
               <optgroup key={groupLabel} label={groupLabel}>
@@ -211,7 +211,7 @@ function Form({
             name="workspace"
             id="workspace"
           >
-            <option>Select Workspace</option>
+            <option value="">Select Workspace</option>
             {me.workspaces.map(({ name }: { name: any }) => (
               <option key={name} value={name}>
                 {getWorkspaceName(name)}
