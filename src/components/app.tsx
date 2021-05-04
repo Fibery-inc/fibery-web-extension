@@ -102,7 +102,7 @@ function getDefaultDescription() {
     state?.selection,
   ]
     .filter(Boolean)
-    .join("\n");
+    .join("\n\n");
 }
 
 function Form({
