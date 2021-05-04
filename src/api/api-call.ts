@@ -17,6 +17,7 @@ export async function apiCall<T>(
   const init = {
     method,
     headers: {
+      "x-user-agent": "fibery-web-extension",
       Accept: "application/json",
       "Content-Type": "application/json; charset=utf-8",
     },
