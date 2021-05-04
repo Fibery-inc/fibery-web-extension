@@ -1,9 +1,10 @@
 import { useState, useRef } from "react";
 import styles from "./app.module.css";
 import { useCreateEntity, useMe, useSchema } from "../api/fetcher";
-import { User } from "../types";
+import { User, Schema } from "../types";
+import { AppError } from "../api/api-call";
 
-function getTypes(schema: any) {
+function getTypes(schema: Schema) {
   const typesByGroup: Array<{
     groupLabel: string;
     types: Array<{ name: string; id: string }>;
@@ -43,7 +44,7 @@ function TypesSelect({
 }: {
   onChange: ({ typeId }: { typeId: string }) => void;
   value?: string;
-  schema: any;
+  schema?: Schema;
 }) {
   return (
     <label
@@ -239,7 +240,7 @@ function Form({
             id="workspace"
           >
             <option value="">Select Workspace</option>
-            {me.workspaces.map(({ name }: { name: any }) => (
+            {me.workspaces.map(({ name }) => (
               <option key={name} value={name}>
                 {getWorkspaceName(name)}
               </option>
@@ -261,7 +262,7 @@ function Form({
   );
 }
 
-function Content({ me, error }: { me: any; error: any }) {
+function Content({ me, error }: { me?: User; error: AppError }) {
   const [link, setLink] = useState<string>();
   if (link) {
     return (
@@ -341,7 +342,7 @@ function App() {
         process.env.NODE_ENV === "development" ? "border border-black" : ""
       } mx-auto ${styles.app} grid relative`}
     >
-      <Content me={me} error={error} />
+      <Content me={me} error={error as AppError} />
     </div>
   );
 }

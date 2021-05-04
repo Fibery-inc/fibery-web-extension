@@ -1,4 +1,4 @@
-import { apiCall } from "./api-call";
+import { apiCall, AppError, unknownErrorMessage } from "./api-call";
 import { getValue } from "./storage.api";
 import { getHttpProtocol } from "./getHttpProtocol";
 import { User } from "../types";
@@ -39,23 +39,34 @@ export function updateDocument({
   });
 }
 
-export const schemaPayload = [{ command: "fibery.schema/query", args: {} }];
-export const getSchema = (host: string) => {
-  return apiCall(getCommandApiUrl(host), {
-    method: "POST",
-    body: schemaPayload,
-  });
+type SuccessResult<T> = {
+  success: true;
+  result: Array<T> | T;
 };
 
-export function executeCommands({
+type ErrorResult = {
+  success: false;
+  result: { message: string };
+};
+
+export function executeCommands<T>({
   host,
   commands,
 }: {
   host: string;
   commands: Array<unknown>;
-}) {
-  return apiCall(getCommandApiUrl(host), {
+}): Promise<T> {
+  return apiCall<[SuccessResult<T> | ErrorResult]>(getCommandApiUrl(host), {
     method: "POST",
     body: commands,
+  }).then(([{ success, result }]) => {
+    if (success) {
+      return Array.isArray(result) && result.length > 0
+        ? (result[0] as T)
+        : (result as T);
+    }
+    throw new AppError(
+      (result as { message: string }).message || unknownErrorMessage
+    );
   });
 }

@@ -1,4 +1,4 @@
-class AppError extends Error {
+export class AppError extends Error {
   code?: number;
   constructor(message: string, code?: number) {
     super(message);
@@ -6,7 +6,7 @@ class AppError extends Error {
   }
 }
 
-const unknownErrorMessage = "Oops, something has gone wrong.";
+export const unknownErrorMessage = "Oops, something has gone wrong.";
 export async function apiCall<T>(
   url: string,
   {
@@ -25,6 +25,7 @@ export async function apiCall<T>(
   try {
     const response = await fetch(url, { ...init, credentials: "same-origin" });
     if (response.status === 401) {
+      // noinspection ExceptionCaughtLocallyJS
       throw new AppError("Unauthorized", 401);
     }
     const data = await response.json();

@@ -9,7 +9,8 @@ export async function getValue<T>(key: string): Promise<T | undefined> {
   if (storage) {
     return new Promise((resolve, reject) => {
       storage.sync.get([key], (value: any, e: any) => {
-        resolve(value[key]);
+        // TODO handle error
+        resolve(value && value[key]);
       });
     });
   }
@@ -23,6 +24,7 @@ export async function setValue<T>(key: string, value: T) {
   if (storage) {
     await new Promise((resolve, reject) => {
       storage.sync.set({ [key]: value }, () => {
+        // TODO handle error
         resolve(undefined);
       });
     });

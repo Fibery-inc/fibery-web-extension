@@ -1,28 +1,21 @@
 import { useQuery, useMutation } from "react-query";
-import {
-  getMe,
-  schemaPayload,
-  getSchema,
-  executeCommands,
-  updateDocument,
-} from "./api";
+import { getMe, executeCommands, updateDocument } from "./api";
 import { setValue } from "./storage.api";
 import { getLink } from "./getLink";
-import { User } from "../types";
+import { User, Schema, Entity } from "../types";
 
 export function useMe() {
   return useQuery<User>(["me"], () => getMe());
 }
 
+const schemaPayload = [{ command: "fibery.schema/query", args: {} }];
 export function useSchema(host?: string) {
   return useQuery(
     [...schemaPayload, host],
     () =>
       host
-        ? getSchema(host).then((res: any) => {
-            return res[0].result;
-          })
-        : Promise.resolve(),
+        ? executeCommands<Schema>({ host, commands: schemaPayload })
+        : Promise.resolve(undefined),
     {
       enabled: Boolean(host),
     }
@@ -36,14 +29,20 @@ const createEntityCommands = ({
 }: {
   typeId: string;
   entityName: string;
-  schema: any;
+  schema: Schema;
 }) => {
-  const type = schema["fibery/types"].find((type: any) => {
+  const type = schema["fibery/types"].find((type) => {
     return type["fibery/id"] === typeId;
   });
-  const titleField = type["fibery/fields"].find((field: any) => {
+  if (!type) {
+    throw Error("Could not find type in fibery schema");
+  }
+  const titleField = type["fibery/fields"].find((field) => {
     return field["fibery/meta"]["ui/title?"] === true;
   });
+  if (!titleField) {
+    throw Error(`Type ${type["fibery/name"]} doesn't have title field`);
+  }
   return [
     {
       command: "fibery.entity/create",
@@ -70,12 +69,15 @@ export function useCreateEntity() {
       entityName: string;
       description: string;
       typeId: string;
-      schema: any;
+      schema: Schema;
     }) => {
-      const type = schema["fibery/types"].find((type: any) => {
+      const type = schema["fibery/types"].find((type) => {
         return type["fibery/id"] === typeId;
       });
-      const descriptionField = type["fibery/fields"].find((field: any) => {
+      if (!type) {
+        throw Error("Could not find type in fibery schema");
+      }
+      const descriptionField = type["fibery/fields"].find((field) => {
         return field["fibery/name"]
           .toLowerCase()
           .trim()
@@ -83,15 +85,13 @@ export function useCreateEntity() {
       });
       await setValue("lastUsedType", typeId);
       await setValue("lastUsedWorkspace", host);
-      const [{ result: entity }] = (await executeCommands({
+      const entity = await executeCommands<Entity>({
         host,
         commands: createEntityCommands({ typeId, entityName, schema }),
-      })) as any;
-      if (!entity) {
-        throw new Error("Could not create entity");
-      }
+      });
+
       if (descriptionField) {
-        const [{ result: secrets }] = (await executeCommands({
+        const entityWithDocumentSecret = await executeCommands<Entity>({
           host,
           commands: [
             {
@@ -114,15 +114,16 @@ export function useCreateEntity() {
               },
             },
           ],
-        })) as any;
-        if (!secrets) {
-          throw new Error("Could not save description");
-        }
+        });
         const secret =
-          secrets[0][descriptionField["fibery/name"]][
-            "Collaboration~Documents/secret"
-          ];
-        await updateDocument({ host, content: description, secret });
+          entityWithDocumentSecret[descriptionField["fibery/name"]] &&
+          (entityWithDocumentSecret[descriptionField["fibery/name"]] as Record<
+            string,
+            string
+          >)["Collaboration~Documents/secret"];
+        if (typeof secret === "string") {
+          await updateDocument({ host, content: description, secret });
+        }
       }
       return { entity, linkToEntity: getLink({ host, entity, type }) };
     }

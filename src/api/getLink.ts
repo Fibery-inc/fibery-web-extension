@@ -1,3 +1,4 @@
+import { FiberyType, Entity } from "../types";
 import { getHttpProtocol } from "./getHttpProtocol";
 export function getLink({
   host,
@@ -5,8 +6,8 @@ export function getLink({
   type,
 }: {
   host: string;
-  entity: any;
-  type: any;
+  entity: Entity;
+  type: FiberyType;
 }): string {
   return `${getHttpProtocol() + host}/${type["fibery/name"]}/${
     entity["fibery/public-id"]
