@@ -22,6 +22,15 @@ async function getCurrentTab() {
   return tab;
 }
 
+// @ts-ignore
+if (typeof chrome !== "undefined" && chrome.action) {
+  const isMac = navigator.platform.startsWith("Mac");
+  // @ts-ignore
+  chrome.action.setTitle({
+    title: "Safe To Fibery" + "(".concat(isMac ? "⌘" : "Ctrl", "+Shift+K)"),
+  });
+}
+
 if (
   // @ts-ignore
   typeof chrome !== "undefined" &&
