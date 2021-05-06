@@ -313,22 +313,20 @@ function Content({ me, error }: { me?: User; error: AppError }) {
   //if (!me || true) {
   if (error && error.code === 401) {
     return (
-      <a
-        rel="noreferrer"
-        href="https://fibery.io/login"
-        target="_blank"
-        className="block place-self-center text-center text-blue-700 hover:opacity-80"
-      >
+      <span className="block place-self-center text-center text-blue-700">
         <div className={styles.logo + " inline-block w-16 h-16"} />
         <div className="p-4">
-          <button
+          <a
+            rel="noreferrer"
+            href="https://fibery.io/login"
+            target="_blank"
             className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
             type="submit"
           >
             Please login to Fibery
-          </button>
+          </a>
         </div>
-      </a>
+      </span>
     );
   }
   if (error) {
