@@ -18,5 +18,5 @@ REMOTE_HOST=https://my-account.fibery.io
 ## how to build extension
 
 ```
-REACT_APP_HOST=https://fibery.io INLINE_RUNTIME_CHUNK=false yarn build
+GENERATE_SOURCEMAP=false  REACT_APP_HOST=https://fibery.io INLINE_RUNTIME_CHUNK=false yarn build
 ```
