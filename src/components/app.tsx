@@ -203,7 +203,7 @@ function Form({
                 submitButtonRef.current.click();
               }
             }}
-            className="mt-1 block w-full border-gray-200 rounded text-sm focus:ring focus:ring-offset-0 focus:border-gray-400 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
+            className="mt-1 max-h-48 block w-full border-gray-200 rounded text-sm focus:ring focus:ring-offset-0 focus:border-gray-400 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
             value={currentDescription}
             onChange={(e) => {
               setCurrentDescription(e.currentTarget.value);
