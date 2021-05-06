@@ -83,7 +83,7 @@ function TypesSelect({
       ) : (
         <select
           disabled
-          className="disabled:opacity-50 min-w-0 w-56 text-sm mt-0 border-0 rounded focus:ring-0 focus:ring-offset-0 focus:outline-none"
+          className="disabled:opacity-50 min-w-0 w-56 text-sm mt-0 border-gray-200 rounded focus:ring-0 focus:ring-offset-0 focus:outline-none"
         >
           <option>Select Type</option>
         </select>
