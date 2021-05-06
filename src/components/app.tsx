@@ -221,7 +221,10 @@ function Form({
             type="submit"
             disabled={disabled}
           >
-            Create Entity
+            Create Entity{" "}
+            <span className="rounded px-2 border text-xs font-normal ml-1 opacity-60 border-white border-opacity-30">
+              Enter
+            </span>
           </button>
         </div>
 
