@@ -121,6 +121,7 @@ function Form({
   }) => void;
 }) {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const inputNameRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string>();
   const [currentWorkspace, setCurrentWorkspace] = useState<string | undefined>(
     me.lastUsedWorkspace
@@ -145,6 +146,10 @@ function Form({
     typeId: currentType,
     lastUsedTypeName: me.lastUsedTypeName,
   });
+
+  useEffect(() => {
+    inputNameRef.current?.focus();
+  }, []);
   return (
     <>
       <div
@@ -196,6 +201,7 @@ function Form({
         <label className="block px-4 pt-4" htmlFor="name">
           <span className="text-gray-500">Name</span>
           <input
+            ref={inputNameRef}
             className="mt-1 block w-full border-gray-200 p-2 rounded text-sm focus:ring focus:ring-offset-0 focus:border-gray-400 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
             value={currentName}
             onChange={(e) => setCurrentName(e.currentTarget.value)}
