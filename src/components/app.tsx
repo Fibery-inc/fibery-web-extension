@@ -222,7 +222,7 @@ function Form({
             disabled={disabled}
           >
             Create Entity{" "}
-            <span className="rounded px-2 border text-xs font-normal ml-1 opacity-60 border-white border-opacity-30">
+            <span className="rounded px-1 border text-xs font-normal ml-1 opacity-60 border-white border-opacity-30">
               Enter
             </span>
           </button>
