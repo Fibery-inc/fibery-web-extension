@@ -8,6 +8,17 @@
     "48": "favicon48.png",
     "128": "favicon128.png"
   },
+  "commands": {
+    "_execute_action": {
+      "description": "Save to Fibery",
+      "suggested_key": {
+        "chromeos": "Ctrl+Shift+K",
+        "linux": "Ctrl+Shift+K",
+        "mac": "Command+Shift+K",
+        "windows": "Ctrl+Shift+K"
+      }
+    }
+  },
   "action": {
     "default_icon": {
       "16": "favicon16.png",
@@ -16,7 +27,7 @@
       "128": "favicon128.png"
     },
     "default_popup": "index.html",
-    "default_title": "Fibery web extension"
+    "default_title": "Save to Fibery"
   },
   "permissions": [
     "activeTab",

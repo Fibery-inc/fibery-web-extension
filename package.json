@@ -22,6 +22,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "release": "GENERATE_SOURCEMAP=false  REACT_APP_HOST=https://fibery.io INLINE_RUNTIME_CHUNK=false yarn build",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
