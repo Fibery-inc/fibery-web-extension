@@ -3,6 +3,7 @@ import styles from "./app.module.css";
 import { useCreateEntity, useMe, useSchema } from "../api/fetcher";
 import { User, Schema } from "../types";
 import { AppError } from "../api/api-call";
+import { getTypeName } from "../api/getTypeName";
 
 function getTypes(schema: Schema) {
   const typesByGroup: Array<{
@@ -111,7 +112,13 @@ function Form({
   onSave,
 }: {
   me: User;
-  onSave: ({ linkToEntity }: { linkToEntity: string }) => void;
+  onSave: ({
+    linkToEntity,
+    typeName,
+  }: {
+    linkToEntity: string;
+    typeName: string;
+  }) => void;
 }) {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const [error, setError] = useState<string>();
@@ -133,6 +140,11 @@ function Form({
   const disabled = !Boolean(
     currentType && currentWorkspace && currentName && schema
   );
+  const typeName = getTypeName({
+    schema,
+    typeId: currentType,
+    lastUsedTypeName: me.lastUsedTypeName,
+  });
   return (
     <>
       <div
@@ -157,7 +169,10 @@ function Form({
               },
               {
                 onSuccess({ linkToEntity }) {
-                  onSave({ linkToEntity });
+                  onSave({
+                    linkToEntity,
+                    typeName,
+                  });
                   setCurrentName("");
                   setCurrentDescription("");
                 },
@@ -221,7 +236,7 @@ function Form({
             type="submit"
             disabled={disabled}
           >
-            Create Entity{" "}
+            Create {typeName}{" "}
             <span className="rounded px-1 border text-xs font-normal ml-1 opacity-60 border-white border-opacity-30">
               Enter
             </span>
@@ -267,7 +282,8 @@ function Form({
 
 function Content({ me, error }: { me?: User; error: AppError }) {
   const [link, setLink] = useState<string>();
-  if (link) {
+  const [typeName, setTypeName] = useState<string>();
+  if (link && me) {
     return (
       <div className="place-self-center">
         <a
@@ -280,7 +296,9 @@ function Content({ me, error }: { me?: User; error: AppError }) {
             className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
             type="submit"
           >
-            Open entity in Fibery
+            Open{" "}
+            {typeName || getTypeName({ lastUsedTypeName: me.lastUsedTypeName })}{" "}
+            in Fibery
           </button>
         </a>
 
@@ -329,8 +347,9 @@ function Content({ me, error }: { me?: User; error: AppError }) {
   }
   return (
     <Form
-      onSave={({ linkToEntity }) => {
+      onSave={({ linkToEntity, typeName }) => {
         setLink(linkToEntity);
+        setTypeName(typeName);
       }}
       me={me}
     />

@@ -17,6 +17,7 @@ export async function getMe(): Promise<User> {
   }>(meUrl, { method: "GET" });
   return {
     ...me,
+    lastUsedTypeName: await getValue("lastUsedTypeName"),
     lastUsedType: await getValue("lastUsedType"),
     lastUsedWorkspace: await getValue("lastUsedWorkspace"),
   };

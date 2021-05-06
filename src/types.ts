@@ -3,6 +3,7 @@ export type User = {
   workspaces: Array<{ name: string }>;
   lastUsedWorkspace?: string;
   lastUsedType?: string;
+  lastUsedTypeName?: string;
 };
 
 type FiberyField = {

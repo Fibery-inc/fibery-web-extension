@@ -2,6 +2,7 @@ import { useQuery, useMutation } from "react-query";
 import { getMe, executeCommands, updateDocument } from "./api";
 import { setValue } from "./storage.api";
 import { getLink } from "./getLink";
+import { getTypeName } from "./getTypeName";
 import { User, Schema, Entity } from "../types";
 
 export function useMe() {
@@ -85,6 +86,7 @@ export function useCreateEntity() {
       });
       await setValue("lastUsedType", typeId);
       await setValue("lastUsedWorkspace", host);
+      await setValue("lastUsedTypeName", getTypeName({ schema, typeId }));
       const entity = await executeCommands<Entity>({
         host,
         commands: createEntityCommands({ typeId, entityName, schema }),
