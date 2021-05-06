@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styles from "./app.module.css";
 import { useCreateEntity, useMe, useSchema } from "../api/fetcher";
 import { User, Schema } from "../types";
@@ -177,13 +177,11 @@ function Form({
                   setCurrentDescription("");
                 },
                 onError(error: unknown) {
+                  setSubmitting(false);
                   if (error instanceof Error) {
                     return setError(error.message);
                   }
                   setError("Oops, something has gone wrong.");
-                },
-                onSettled() {
-                  setSubmitting(false);
                 },
               }
             );
@@ -280,54 +278,82 @@ function Form({
   );
 }
 
+function Login() {
+  const ref = useRef<HTMLAnchorElement>(null);
+  useEffect(() => {
+    ref.current?.focus();
+  }, []);
+  return (
+    <span className="block place-self-center text-center text-blue-700">
+      <div className={styles.logo + " inline-block w-16 h-16"} />
+      <div className="p-4">
+        <a
+          ref={ref}
+          rel="noreferrer"
+          href="https://fibery.io/login"
+          target="_blank"
+          className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
+          type="submit"
+        >
+          Please login to Fibery
+        </a>
+      </div>
+    </span>
+  );
+}
+
+function FinalStep({
+  link,
+  typeName,
+  me,
+  setLink,
+}: {
+  link: string;
+  typeName?: string;
+  me: User;
+  setLink: (link: string) => void;
+}) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  useEffect(() => {
+    ref.current?.focus();
+  }, []);
+  return (
+    <div className="place-self-center">
+      <span className="block place-self-center text-center text-blue-700">
+        <a
+          ref={ref}
+          rel="noreferrer"
+          href={link}
+          target="_blank"
+          className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
+          type="submit"
+        >
+          Open{" "}
+          {typeName || getTypeName({ lastUsedTypeName: me.lastUsedTypeName })}{" "}
+          in Fibery
+        </a>
+      </span>
+
+      <div className="flex justify-center">
+        <div className="px-4 py-2 text-gray-500">
+          <button onClick={() => setLink("")}>Go back</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Content({ me, error }: { me?: User; error: AppError }) {
   const [link, setLink] = useState<string>();
   const [typeName, setTypeName] = useState<string>();
   if (link && me) {
     return (
-      <div className="place-self-center">
-        <a
-          rel="noreferrer"
-          href={link}
-          target="_blank"
-          className="block place-self-center text-center text-blue-700 hover:opacity-80"
-        >
-          <button
-            className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
-            type="submit"
-          >
-            Open{" "}
-            {typeName || getTypeName({ lastUsedTypeName: me.lastUsedTypeName })}{" "}
-            in Fibery
-          </button>
-        </a>
-
-        <div className="flex justify-center">
-          <div className="px-4 py-2 text-gray-500">
-            <button onClick={() => setLink("")}>Go back</button>
-          </div>
-        </div>
-      </div>
+      <FinalStep typeName={typeName} me={me} link={link} setLink={setLink} />
     );
   }
   //if (!me || true) {
   if (error && error.code === 401) {
-    return (
-      <span className="block place-self-center text-center text-blue-700">
-        <div className={styles.logo + " inline-block w-16 h-16"} />
-        <div className="p-4">
-          <a
-            rel="noreferrer"
-            href="https://fibery.io/login"
-            target="_blank"
-            className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-100 focus:outline-none"
-            type="submit"
-          >
-            Please login to Fibery
-          </a>
-        </div>
-      </span>
-    );
+    return <Login />;
   }
   if (error) {
     return (
