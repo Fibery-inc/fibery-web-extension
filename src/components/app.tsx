@@ -57,7 +57,7 @@ function TypesSelect({
       </span>
       {schema ? (
         <select
-          className="min-w-0 w-56 text-sm mt-0 border-gray-200 rounded focus:ring focus:ring-offset-0 focus:border-gray-400 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
+          className="min-w-0 w-56 text-sm mt-0 border-0 rounded focus:bg-gray-100 focus:ring-offset-0 focus:border-gray-100 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
           value={value}
           onChange={(e) =>
             onChange({
@@ -83,7 +83,7 @@ function TypesSelect({
       ) : (
         <select
           disabled
-          className="disabled:opacity-50 min-w-0 w-56 text-sm mt-0 border-gray-200 rounded focus:ring-0 focus:ring-offset-0 focus:outline-none"
+          className="disabled:opacity-50 min-w-0 w-56 text-sm mt-0 border-0 rounded focus:bg-gray-100 focus:ring-offset-0 focus:border-gray-100 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
         >
           <option>Select Type</option>
         </select>
@@ -255,7 +255,7 @@ function Form({
             Workspace
           </span>
           <select
-            className="min-w-0 w-56 text-sm mt-0 border-gray-200 rounded focus:ring focus:ring-offset-0 focus:border-gray-400 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
+            className="min-w-0 w-56 text-sm mt-0 border-0 rounded focus:bg-gray-100 focus:ring-offset-0 focus:border-gray-100 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
             onChange={(e) => setCurrentWorkspace(e.currentTarget.value)}
             value={currentWorkspace}
             name="workspace"
