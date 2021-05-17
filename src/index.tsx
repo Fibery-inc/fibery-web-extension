@@ -27,7 +27,7 @@ if (typeof chrome !== "undefined" && chrome.action) {
   const isMac = navigator.platform.startsWith("Mac");
   // @ts-ignore
   chrome.action.setTitle({
-    title: "Safe To Fibery" + "(".concat(isMac ? "⌘" : "Ctrl", "+Shift+K)"),
+    title: "Save To Fibery" + "(".concat(isMac ? "⌘" : "Ctrl", "+Shift+K)"),
   });
 }
 
