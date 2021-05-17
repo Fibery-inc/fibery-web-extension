@@ -7,6 +7,25 @@ import { getTypeName } from "../api/getTypeName";
 
 const isMac = navigator?.platform?.startsWith("Mac");
 
+function Shortcuts() {
+  if (isMac) {
+    return (
+      <span className="px-4 py-2">
+        Save To Fibery
+        <span>⌘</span>
+        +Shift+K
+      </span>
+    );
+  }
+  return (
+    <span className="px-4 py-2">
+      Save To Fibery
+      <span>ctrl</span>
+      +Shift+K
+    </span>
+  );
+}
+
 function getTypes(schema: Schema) {
   const typesByGroup: Array<{
     groupLabel: string;
@@ -279,9 +298,7 @@ function Form({
           }}
         />
         <div className="border-t border-gray-100 text-gray-500 flex justify-end">
-          <div className="px-4 py-2">
-            {"Save To Fibery" + "(".concat(isMac ? "⌘" : "Ctrl", "+Shift+K)")}
-          </div>
+          <Shortcuts />
           <div className="px-4 py-2">{me.email}</div>
         </div>
       </form>
