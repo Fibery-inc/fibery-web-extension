@@ -10,18 +10,24 @@ const isMac = navigator?.platform?.startsWith("Mac");
 function Shortcuts() {
   if (isMac) {
     return (
-      <span className="px-4 py-2">
-        Save To Fibery
-        <span>⌘</span>
-        +Shift+K
+      <span className="px-4 py-2 text-gray-400">
+        <span className="bg-gray-100 rounded p-0.5 mr-1 text-xs">⌘</span>+
+        <span className="bg-gray-100 rounded p-0.5 mr-1 ml-1 text-xs">
+          Shift
+        </span>
+        +<span className="bg-gray-100 rounded p-0.5 ml-1 text-xs">K</span>
       </span>
     );
   }
   return (
     <span className="px-4 py-2">
-      Save To Fibery
-      <span>ctrl</span>
-      +Shift+K
+      <span className="px-4 py-2 text-gray-400">
+        <span className="bg-gray-100 rounded p-0.5 mr-1 text-xs">Ctrl</span>+
+        <span className="bg-gray-100 rounded p-0.5 mr-1 ml-1 text-xs">
+          Shift
+        </span>
+        +<span className="bg-gray-100 rounded p-0.5 ml-1 text-xs">K</span>
+      </span>
     </span>
   );
 }
@@ -297,7 +303,7 @@ function Form({
             setCurrentType(typeId);
           }}
         />
-        <div className="border-t border-gray-100 text-gray-500 flex justify-end">
+        <div className="border-t border-gray-100 text-gray-500 flex justify-between">
           <Shortcuts />
           <div className="px-4 py-2">{me.email}</div>
         </div>
