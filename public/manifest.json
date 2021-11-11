@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "Fibery Browser Extension",
   "description": "Use Fibery Chrome Extension to create Entities — Competitors, Pages, Tickets — right from a web page. Works great for design and tech references, competitor analysis, and market research.",
   "icons": {
