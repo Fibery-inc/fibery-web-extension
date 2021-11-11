@@ -7,6 +7,8 @@ import { getTypeName } from "../api/getTypeName";
 
 const isMac = navigator?.platform?.startsWith("Mac");
 
+const typeTerm = "Database";
+
 function Shortcuts() {
   if (isMac) {
     return (
@@ -80,7 +82,7 @@ function TypesSelect({
       htmlFor="type"
     >
       <span className="flex flex-shrink-0 items-center text-gray-500">
-        Type
+        {typeTerm}
       </span>
       {schema ? (
         <select
@@ -94,7 +96,7 @@ function TypesSelect({
           name="type"
           id="type"
         >
-          <option value="">Select Type</option>
+          <option value="">Select {typeTerm}</option>
           {getTypes(schema).map(({ groupLabel, types }) => {
             return (
               <optgroup key={groupLabel} label={groupLabel}>
@@ -112,7 +114,7 @@ function TypesSelect({
           disabled
           className="disabled:opacity-50 min-w-0 w-56 text-sm mt-0 border-0 rounded focus:bg-gray-100 focus:ring-offset-0 focus:border-gray-100 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
         >
-          <option>Select Type</option>
+          <option>Select {typeTerm}</option>
         </select>
       )}
     </label>
@@ -262,7 +264,9 @@ function Form({
         <div className="block px-4 py-1">
           <button
             ref={submitButtonRef}
-            title={disabled ? "Please select workspace and type" : undefined}
+            title={
+              disabled ? `Please select Workspace and ${typeTerm}` : undefined
+            }
             className="disabled:opacity-50 disabled:cursor-default disabled:bg-gray-800 bg-gray-800 hover:bg-gray-800 rounded text-white text-sm font-medium leading-6 py-0.5 px-2 border border-transparent focus:ring-2 focus:ring-offset-1 focus:ring-offset-white focus:ring-gray-200 focus:outline-none"
             type="submit"
             disabled={disabled}
