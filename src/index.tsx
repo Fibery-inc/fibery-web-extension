@@ -4,17 +4,6 @@ import "./index.css";
 import { FiberyQueryClientProvider } from "./components/fibery-query-client-provider";
 import App from "./components/app";
 
-// // @ts-ignore
-// chrome.browserAction.onClicked.addListener((tab) => {
-//   // @ts-ignore
-//   chrome.scripting.executeScript({
-//     target: { tabId: tab.id },
-//     function: () => {
-//       console.log(document.location);
-//     },
-//   });
-// });
-
 async function getCurrentTab() {
   let queryOptions = { active: true, currentWindow: true };
   // @ts-ignore
@@ -22,16 +11,40 @@ async function getCurrentTab() {
   return tab;
 }
 
+const isMac = navigator.platform.startsWith("Mac");
+const title = "Save To Fibery" + "(".concat(isMac ? "⌘" : "Ctrl", "+Shift+K)");
+
 // @ts-ignore
-if (typeof chrome !== "undefined" && chrome.action) {
-  const isMac = navigator.platform.startsWith("Mac");
+if (typeof browser !== "undefined" && browser.browserAction) {
+  // @ts-ignore
+  browser.browserAction.setTitle({ title });
+  // @ts-ignore
+} else if (typeof chrome !== "undefined" && chrome.action) {
   // @ts-ignore
   chrome.action.setTitle({
-    title: "Save To Fibery" + "(".concat(isMac ? "⌘" : "Ctrl", "+Shift+K)"),
+    title,
   });
 }
-
-if (
+// @ts-ignore
+if (typeof browser !== "undefined" && browser.tabs) {
+  (async () => {
+    try {
+      // @ts-ignore
+      const [info] = await browser.tabs.executeScript({
+        code: `var info = {
+            // @ts-ignore
+            selection: window?.getSelection()?.toString(),
+            title: document.title,
+            url: document.location.toString(),
+          };info`,
+      });
+      // @ts-ignore
+      window.fiberyState = info;
+    } catch (e) {
+      console.error(e);
+    }
+  })();
+} else if (
   // @ts-ignore
   typeof chrome !== "undefined" &&
   // @ts-ignore

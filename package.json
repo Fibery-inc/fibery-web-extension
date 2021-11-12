@@ -2,6 +2,9 @@
   "name": "fibery-web-extension",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">16.7"
+  },
   "dependencies": {
     "@craco/craco": "6.3.0",
     "@testing-library/jest-dom": "^5.14.1",
@@ -22,7 +25,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "release": "GENERATE_SOURCEMAP=false  REACT_APP_HOST=https://fibery.io INLINE_RUNTIME_CHUNK=false yarn build",
+    "release": "rm -rf build && rm -rf release && mkdirp release && mkdirp release/chrome && mkdirp release/firefox && GENERATE_SOURCEMAP=false  REACT_APP_HOST=https://fibery.io INLINE_RUNTIME_CHUNK=false yarn build && node make-release.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
