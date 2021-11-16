@@ -18,6 +18,7 @@ REMOTE_HOST=https://my-account.fibery.io
 ## how to build extension
 
 Prerequisites:
+ - MacOs or Linux
  - install [nodejs](https://nodejs.org/en/) 16.7 version or great.
  - install [yarn](https://classic.yarnpkg.com/lang/en/docs/install/) 1.* version.
 ```
