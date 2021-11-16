@@ -4,9 +4,6 @@ import { config } from "dotenv";
 
 config();
 const { REMOTE_HOST, FIBERY_AUTH_TOKEN } = process.env;
-if (!REMOTE_HOST) {
-  throw new Error(`Please specify REMOTE_HOST env variable`);
-}
 
 // https://vitejs.dev/config/
 export default defineConfig({
