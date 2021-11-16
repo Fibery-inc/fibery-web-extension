@@ -78,21 +78,17 @@ async function zip() {
         }
         return [key, value];
       })
-      .concat(
-        process.env.DEV_EXTENSION_ID
-          ? [
-              [
-                "browser_specific_settings",
-                {
-                  gecko: {
-                    id: `{daf44bf7-a45e-4450-979c-91cf07434c3d}`,
-                    strict_min_version: "42.0",
-                  },
-                },
-              ],
-            ]
-          : null
-      )
+      .concat([
+        [
+          "browser_specific_settings",
+          {
+            gecko: {
+              id: "{18e41a88-b828-459d-91d7-95d34f902e2b}",
+              strict_min_version: "94.0",
+            },
+          },
+        ],
+      ])
       .filter(Boolean)
   );
   await writeFile(
