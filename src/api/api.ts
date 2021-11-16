@@ -3,7 +3,7 @@ import { getValue } from "./storage.api";
 import { getHttpProtocol } from "./getHttpProtocol";
 import { User } from "../types";
 
-const meUrl = `${process.env.REACT_APP_HOST || ""}/api/users/me`;
+const meUrl = `${import.meta.env.VITE_APP_HOST || ""}/api/users/me`;
 const getBaseApiUrl = (host: string) => `${getHttpProtocol()}${host}/api/`;
 
 const getCommandApiUrl = (host: string) => {

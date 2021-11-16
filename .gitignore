@@ -9,7 +9,8 @@
 /coverage
 
 # production
-/build
+/dist
+/release
 
 # misc
 .DS_Store
@@ -23,4 +24,4 @@ yarn-debug.log*
 yarn-error.log*
 .idea
 .env
-release
+

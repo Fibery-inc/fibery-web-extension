@@ -1,15 +1,12 @@
 const { cp, readFile, writeFile } = require("node:fs/promises");
 const { join } = require("node:path");
 const { execSync } = require("node:child_process");
-const buildDir = join(__dirname, "./build");
+const buildDir = join(__dirname, "./dist");
 const releaseDir = join(__dirname, "./release");
 const chromeDist = join(releaseDir, "./chrome");
 const firefoxDist = join(releaseDir, "./firefox");
-const filterFiles = (f) => {
-  return !f.includes("asset-manifest");
-};
 (async () => {
-  const copyOpts = { recursive: true, filter: filterFiles };
+  const copyOpts = { recursive: true };
   await cp(buildDir, chromeDist, copyOpts);
   await cp(buildDir, firefoxDist, copyOpts);
   const manifest = JSON.parse(

@@ -17,6 +17,12 @@ REMOTE_HOST=https://my-account.fibery.io
 
 ## how to build extension
 
+Prerequisites:
+ - install [nodejs](https://nodejs.org/en/) 16.7 version or great.
+ - install [yarn](https://classic.yarnpkg.com/lang/en/docs/install/) 1.* version.
 ```
+yarn install
 yarn release
 ```
+
+All artifact files will be put in release folder

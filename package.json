@@ -6,15 +6,9 @@
     "node": ">16.7"
   },
   "dependencies": {
-    "@craco/craco": "6.3.0",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^12.1.0",
-    "@testing-library/user-event": "^13.2.1",
-    "@types/jest": "^27.0.1",
     "@types/node": "^16.9.3",
     "@types/react": "^17.0.21",
     "@types/react-dom": "^17.0.9",
-    "http-proxy-middleware": "2.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.2",
     "react-query": "3.24.2",
@@ -22,20 +16,19 @@
     "typescript": "~4.4.3"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "release": "rm -rf build && rm -rf release && mkdirp release && mkdirp release/chrome && mkdirp release/firefox && GENERATE_SOURCEMAP=false  REACT_APP_HOST=https://fibery.io INLINE_RUNTIME_CHUNK=false yarn build && node make-release.js",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview",
+    "release": "rm -rf dist && rm -rf release && mkdirp release && mkdirp release/chrome && mkdirp release/firefox && VITE_APP_HOST=https://fibery.io yarn build && node make-release.js"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
     ],
     "development": [
       "last 1 chrome version",
@@ -45,10 +38,12 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "0.3.3",
-    "autoprefixer": "^9",
+    "@vitejs/plugin-react": "1.0.9",
+    "autoprefixer": "10.4.0",
     "dotenv": "10.0.0",
-    "postcss": "^7",
+    "postcss": "8.3.11",
     "prettier": "2.4.1",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
+    "tailwindcss": "2.2.19",
+    "vite": "2.6.14"
   }
 }
