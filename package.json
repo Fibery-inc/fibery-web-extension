@@ -18,7 +18,7 @@
     "start": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
-    "release": "rm -rf dist && rm -rf release && mkdirp release && mkdirp release/chrome && mkdirp release/firefox && VITE_APP_HOST=https://fibery.io yarn build && node make-release.js"
+    "release": "rm -rf dist && rm -rf release && mkdir -p release && mkdir -p release/chrome && mkdir -p release/firefox && VITE_APP_HOST=https://fibery.io yarn build && node make-release.js"
   },
   "eslintConfig": {
     "extends": "react-app"
