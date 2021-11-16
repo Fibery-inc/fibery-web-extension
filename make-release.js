@@ -1,11 +1,47 @@
-const { cp, readFile, writeFile } = require("node:fs/promises");
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { cp, readFile, writeFile, mkdir } = require("node:fs/promises");
+const { createWriteStream } = require("node:fs");
 const { join } = require("node:path");
-const { execSync } = require("node:child_process");
-const buildDir = join(__dirname, "./dist");
-const releaseDir = join(__dirname, "./release");
-const chromeDist = join(releaseDir, "./chrome");
-const firefoxDist = join(releaseDir, "./firefox");
+const globby = require("globby");
+const yazl = require("yazl");
+const { buildDir, releaseDir, chromeDist, firefoxDist } = require("./paths");
+
+function archiveFiles({ files, dest, cwd }) {
+  return new Promise((resolve) => {
+    const archive = new yazl.ZipFile();
+    files.forEach((file) =>
+      archive.addFile(
+        file,
+        file.startsWith(`${cwd}/`) ? file.substring(cwd.length + 1) : file
+      )
+    );
+    archive.outputStream
+      .pipe(createWriteStream(dest))
+      .on("close", () => resolve());
+    archive.end();
+  });
+}
+
+async function archiveDirectory({ dir, dest }) {
+  const files = await globby(`${dir}/**/*.*`);
+  await archiveFiles({ files, dest, cwd: dir });
+}
+
+async function zip() {
+  await archiveDirectory({
+    dir: chromeDist,
+    dest: join(releaseDir, "./chrome.zip"),
+  });
+  await archiveDirectory({
+    dir: firefoxDist,
+    dest: join(releaseDir, "./firefox.zip"),
+  });
+}
+
 (async () => {
+  await mkdir(releaseDir, { recursive: true });
+  await mkdir(chromeDist, { recursive: true });
+  await mkdir(firefoxDist, { recursive: true });
   const copyOpts = { recursive: true };
   await cp(buildDir, chromeDist, copyOpts);
   await cp(buildDir, firefoxDist, copyOpts);
@@ -63,6 +99,5 @@ const firefoxDist = join(releaseDir, "./firefox");
     join(firefoxDist, "./manifest.json"),
     JSON.stringify(ffManifest, null, 2)
   );
-  execSync(`cd ./release/chrome && zip -r ../chrome.zip *`);
-  execSync(`cd ./release/firefox && zip -r ../firefox.zip *`);
+  await zip();
 })();

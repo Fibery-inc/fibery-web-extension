@@ -20,7 +20,7 @@ export default defineConfig({
         headers: {
           Authorization: `Token ${FIBERY_AUTH_TOKEN}`,
         },
-        configure: (proxy, options) => {
+        configure: (proxy) => {
           proxy.on("proxyRes", function (proxyRes, req, res) {
             if (req.url === "/api/users/me") {
               res.writeHead(200, {

@@ -3,7 +3,7 @@ import styles from "./app.module.css";
 import { useCreateEntity, useMe, useSchema } from "../api/fetcher";
 import { User, Schema } from "../types";
 import { AppError } from "../api/api-call";
-import { getTypeName } from "../api/getTypeName";
+import { getTypeName } from "../api/get-type-name";
 
 const isMac = navigator?.platform?.startsWith("Mac");
 
@@ -45,7 +45,7 @@ function getTypes(schema: Schema) {
     if (
       type["fibery/meta"]["fibery/domain?"] &&
       type["fibery/name"] !== "fibery/user" &&
-      !Boolean(type["fibery/meta"]["sync/source"])
+      !type["fibery/meta"]["sync/source"]
     ) {
       const [groupLabel, name] = type["fibery/name"].split("/");
       const typeOption = { id: type["fibery/id"], name };
@@ -167,9 +167,7 @@ function Form({
   const { data: schema } = useSchema(currentWorkspace);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { mutate: createEntity } = useCreateEntity();
-  const disabled = !Boolean(
-    currentType && currentWorkspace && currentName && schema
-  );
+  const disabled = !(currentType && currentWorkspace && currentName && schema);
   const typeName = getTypeName({
     schema,
     typeId: currentType,

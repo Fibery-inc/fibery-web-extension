@@ -1,8 +1,8 @@
 import { useQuery, useMutation } from "react-query";
 import { getMe, executeCommands, updateDocument } from "./api";
 import { setValue } from "./storage.api";
-import { getLink } from "./getLink";
-import { getTypeName } from "./getTypeName";
+import { getLink } from "./get-link";
+import { getTypeName } from "./get-type-name";
 import { User, Schema, Entity } from "../types";
 
 export function useMe() {
@@ -119,10 +119,12 @@ export function useCreateEntity() {
         });
         const secret =
           entityWithDocumentSecret[descriptionField["fibery/name"]] &&
-          (entityWithDocumentSecret[descriptionField["fibery/name"]] as Record<
-            string,
-            string
-          >)["Collaboration~Documents/secret"];
+          (
+            entityWithDocumentSecret[descriptionField["fibery/name"]] as Record<
+              string,
+              string
+            >
+          )["Collaboration~Documents/secret"];
         if (typeof secret === "string") {
           await updateDocument({ host, content: description, secret });
         }

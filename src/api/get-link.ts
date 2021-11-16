@@ -1,5 +1,5 @@
 import { FiberyType, Entity } from "../types";
-import { getHttpProtocol } from "./getHttpProtocol";
+import { getHttpProtocol } from "./get-http-protocol";
 export function getLink({
   host,
   entity,

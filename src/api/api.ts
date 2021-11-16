@@ -1,6 +1,6 @@
 import { apiCall, AppError, unknownErrorMessage } from "./api-call";
 import { getValue } from "./storage.api";
-import { getHttpProtocol } from "./getHttpProtocol";
+import { getHttpProtocol } from "./get-http-protocol";
 import { User } from "../types";
 
 const meUrl = `${import.meta.env.VITE_APP_HOST || ""}/api/users/me`;

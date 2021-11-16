@@ -5,15 +5,16 @@ import { FiberyQueryClientProvider } from "./components/fibery-query-client-prov
 import App from "./components/app";
 
 async function getCurrentTab() {
-  let queryOptions = { active: true, currentWindow: true };
+  const queryOptions = { active: true, currentWindow: true };
   // @ts-ignore
-  let [tab] = await chrome.tabs.query(queryOptions);
+  const [tab] = await chrome.tabs.query(queryOptions);
   return tab;
 }
 
 const isMac = navigator.platform.startsWith("Mac");
 const title = "Save To Fibery" + "(".concat(isMac ? "⌘" : "Ctrl", "+Shift+K)");
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 if (typeof browser !== "undefined" && browser.browserAction) {
   // @ts-ignore
