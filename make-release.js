@@ -62,6 +62,7 @@ async function zip() {
             },
           ];
         }
+
         if (key === "action") {
           return ["browser_action", value];
         }
