@@ -100,11 +100,13 @@ function TypesSelect({
           {getTypes(schema).map(({ groupLabel, types }) => {
             return (
               <optgroup key={groupLabel} label={groupLabel}>
-                {types.map((type) => (
-                  <option key={type.id} value={type.id}>
-                    {type.name}
-                  </option>
-                ))}
+                {types
+                  .filter((type) => false === type.name.endsWith("_deleted"))
+                  .map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.name}
+                    </option>
+                  ))}
               </optgroup>
             );
           })}
