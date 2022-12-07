@@ -18,6 +18,7 @@ export type FiberyType = {
     "fibery/domain?": boolean;
     "sync/source"?: unknown;
   };
+  "fibery/deleted?": boolean;
   "fibery/name": string;
   "fibery/id": string;
   "fibery/fields": Array<FiberyField>;

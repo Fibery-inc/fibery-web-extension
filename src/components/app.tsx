@@ -45,7 +45,8 @@ function getTypes(schema: Schema) {
     if (
       type["fibery/meta"]["fibery/domain?"] &&
       type["fibery/name"] !== "fibery/user" &&
-      !type["fibery/meta"]["sync/source"]
+      !type["fibery/meta"]["sync/source"] &&
+      !type["fibery/deleted?"]
     ) {
       const [groupLabel, name] = type["fibery/name"].split("/");
       const typeOption = { id: type["fibery/id"], name };
@@ -100,13 +101,11 @@ function TypesSelect({
           {getTypes(schema).map(({ groupLabel, types }) => {
             return (
               <optgroup key={groupLabel} label={groupLabel}>
-                {types
-                  .filter((type) => false === type.name.endsWith("_deleted"))
-                  .map((type) => (
-                    <option key={type.id} value={type.id}>
-                      {type.name}
-                    </option>
-                  ))}
+                {types.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.name}
+                  </option>
+                ))}
               </optgroup>
             );
           })}
