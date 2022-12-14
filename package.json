@@ -19,7 +19,7 @@
     "build": "tsc && vite build",
     "serve": "vite preview",
     "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "vitest",
     "release": "node clean-release.js && cross-env VITE_APP_HOST=https://fibery.io yarn build && node make-release.js"
   },
   "eslintConfig": {
@@ -52,6 +52,7 @@
     "prettier": "2.4.1",
     "tailwindcss": "2.2.19",
     "vite": "2.6.14",
+    "vitest": "^0.25.8",
     "yazl": "2.5.1"
   }
 }
