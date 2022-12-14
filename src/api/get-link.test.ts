@@ -3,7 +3,7 @@ import { test, expect, vi } from "vitest";
 import type { Entity, FiberyType } from "../types";
 vi.mock("./get-http-protocol", () => ({ getHttpProtocol: () => "https://" }));
 
-test("#getLink can generate link", () => {
+test("#getLink generates link based on entity and type", () => {
   expect(
     getLink({
       host: "fibery.io",
