@@ -1,4 +1,4 @@
-import { getValue } from "./storage.api";
+import { getValue, setValue } from "./storage.api";
 import { beforeEach, describe, expect, test } from "vitest";
 
 const mockStorage: { [key: string]: string } = {
@@ -15,19 +15,8 @@ storageTypes.map((storageType) => {
   describe(`with ${storageType} storage`, () => {
     beforeEach(() => {
       // clear global types
-      storageTypes.forEach((type) => {
-        delete (global as any)[type];
-      });
-      (global as any)[storageType] = {
-        storage: {
-          sync: {
-            get: (key: [string], cb: (value: any) => void) => {
-              const value = mockStorage[key[0]];
-              cb({ [key[0]]: value });
-            },
-          },
-        },
-      };
+      clearGlobals();
+      setupMockStorage(storageType);
     });
     test("#getValue returns existing value", async () => {
       const result = await getValue("token");
@@ -44,5 +33,41 @@ storageTypes.map((storageType) => {
       const result = await getValue("token");
       expect(result).toBeUndefined();
     });
+    test("#setValue sets value", async () => {
+      await setValue("test-key", "test-value");
+      expect(mockStorage["test-key"]).toEqual("test-value");
+    });
+    test("#setValue does not throw an error when storage throws an error", async () => {
+      (global as any)[storageType].storage.sync.set = () => {
+        throw new Error("Storage error");
+      };
+      const result = setValue("test-key", "test-value");
+
+      expect(result).resolves.toBeUndefined();
+      expect(mockStorage["test-key"]).toBeUndefined();
+    });
   });
 });
+
+function setupMockStorage(storageType: string) {
+  (global as any)[storageType] = {
+    storage: {
+      sync: {
+        get: (key: [string], cb: (value: any) => void) => {
+          const value = mockStorage[key[0]];
+          cb({ [key[0]]: value });
+        },
+        set: (value: any, cb: () => void) => {
+          Object.assign(mockStorage, value);
+          cb();
+        },
+      },
+    },
+  };
+}
+
+function clearGlobals() {
+  storageTypes.forEach((type) => {
+    delete (global as any)[type];
+  });
+}
