@@ -1,7 +1,7 @@
 import { getValue, setValue } from "./storage.api";
 import { beforeEach, describe, expect, test } from "vitest";
 
-const mockStorage: { [key: string]: string } = {
+const initialStorage = {
   token: "some-token",
   cookie: "some-cookie",
 };
@@ -13,11 +13,14 @@ const storageTypes = ["browser", "chrome"];
 
 storageTypes.map((storageType) => {
   describe(`with ${storageType} storage`, () => {
+    let mockStorage: { [key: string]: string };
     beforeEach(() => {
       // clear global types
       clearGlobals();
-      setupMockStorage(storageType);
+      mockStorage = { ...initialStorage };
+      setupStorageGlobals(storageType, mockStorage);
     });
+
     test("#getValue returns existing value", async () => {
       const result = await getValue("token");
       expect(result).toEqual("some-token");
@@ -49,7 +52,10 @@ storageTypes.map((storageType) => {
   });
 });
 
-function setupMockStorage(storageType: string) {
+function setupStorageGlobals(
+  storageType: string,
+  mockStorage: { [x: string]: any }
+) {
   (global as any)[storageType] = {
     storage: {
       sync: {
