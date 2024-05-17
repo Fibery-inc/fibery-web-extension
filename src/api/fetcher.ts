@@ -23,6 +23,41 @@ export function useSchema(host?: string) {
   );
 }
 
+const Access = {
+  NONE: "none",
+  NO_ACCESS: "access/type.no-access",
+  READ: "access/type.read",
+  CREATOR: "access/type.creator",
+  EDITOR: "access/type.editor",
+  CONTRIBUTOR: "access/type.contributor",
+};
+
+const writeAccess = [Access.CREATOR, Access.EDITOR, Access.CONTRIBUTOR];
+export function useGetAvailableApps(host?: string) {
+  return useQuery(
+    ["availableApps", host],
+    () =>
+      host
+        ? executeCommands<
+            { access: string; "app-id": string; "app-namespace": string }[]
+          >({
+            host,
+            commands: [{ command: "fibery.app/get-available-apps", args: {} }],
+            returnFirstResult: false,
+          }).then((data) => {
+            return Object.fromEntries(
+              data
+                .filter((app) => writeAccess.includes(app.access))
+                .map((app) => [app["app-namespace"], app])
+            );
+          })
+        : Promise.resolve(undefined),
+    {
+      enabled: Boolean(host),
+    }
+  );
+}
+
 const createEntityCommands = ({
   typeId,
   schema,

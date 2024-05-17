@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "version": "1.0.3",
+  "version": "1.0.5",
   "name": "Fibery Browser Extension",
   "description": "Use Fibery Extension to create Entities — Competitors, Pages, Tickets — right from a web page",
   "icons": {

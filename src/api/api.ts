@@ -53,18 +53,23 @@ type ErrorResult = {
 export function executeCommands<T>({
   host,
   commands,
+  returnFirstResult = true,
 }: {
   host: string;
   commands: Array<unknown>;
+  returnFirstResult?: boolean;
 }): Promise<T> {
   return apiCall<[SuccessResult<T> | ErrorResult]>(getCommandApiUrl(host), {
     method: "POST",
     body: commands,
   }).then(([{ success, result }]) => {
     if (success) {
-      return Array.isArray(result) && result.length > 0
-        ? (result[0] as T)
-        : (result as T);
+      if (returnFirstResult) {
+        return Array.isArray(result) && result.length > 0
+          ? (result[0] as T)
+          : (result as T);
+      }
+      return result as T;
     }
     throw new AppError(
       (result as { message: string }).message || unknownErrorMessage

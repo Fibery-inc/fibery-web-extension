@@ -1,9 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./app.module.css";
-import { useCreateEntity, useMe, useSchema } from "../api/fetcher";
+import {
+  useCreateEntity,
+  useGetAvailableApps,
+  useMe,
+  useSchema,
+} from "../api/fetcher";
 import { User, Schema } from "../types";
 import { AppError } from "../api/api-call";
 import { getTypeName } from "../api/get-type-name";
+import { convertSelectionToMarkdown } from "../api/convert-selection-to-markdown";
 
 const isMac = navigator?.platform?.startsWith("Mac");
 
@@ -71,10 +77,12 @@ function TypesSelect({
   onChange,
   value,
   schema,
+  apps,
 }: {
   onChange: ({ typeId }: { typeId: string }) => void;
   value?: string;
   schema?: Schema;
+  apps?: Record<string, unknown>;
 }) {
   return (
     <label
@@ -84,7 +92,7 @@ function TypesSelect({
       <span className="flex flex-shrink-0 items-center text-gray-500">
         {typeTerm}
       </span>
-      {schema ? (
+      {schema && apps ? (
         <select
           className="min-w-0 w-56 text-sm mt-0 border-0 rounded focus:bg-gray-100 focus:ring-offset-0 focus:border-gray-100 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
           value={value}
@@ -98,6 +106,9 @@ function TypesSelect({
         >
           <option value="">Select {typeTerm}</option>
           {getTypes(schema).map(({ groupLabel, types }) => {
+            if (!apps[groupLabel]) {
+              return null;
+            }
             return (
               <optgroup key={groupLabel} label={groupLabel}>
                 {types
@@ -123,16 +134,19 @@ function TypesSelect({
   );
 }
 
-function getDefaultDescription() {
+async function getDefaultDescription() {
   const state = (window as any).fiberyState as any;
   if (!state) {
     return "";
   }
+
   return [
     state?.url
       ? `[${state?.title ?? "Link to original page"}](${state?.url})`
       : "",
-    state?.selection,
+    state.selection
+      ? await convertSelectionToMarkdown(state.selection, state.url)
+      : "",
   ]
     .filter(Boolean)
     .join("\n\n");
@@ -163,10 +177,13 @@ function Form({
   const [currentName, setCurrentName] = useState<string>(
     ((window as any).fiberyState as any)?.title || ""
   );
-  const [currentDescription, setCurrentDescription] = useState<string>(
-    getDefaultDescription()
-  );
+  const [currentDescription, setCurrentDescription] =
+    useState<string>("Loading...");
+  useEffect(() => {
+    getDefaultDescription().then(setCurrentDescription);
+  }, []);
   const { data: schema } = useSchema(currentWorkspace);
+  const { data: apps } = useGetAvailableApps(currentWorkspace);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { mutate: createEntity } = useCreateEntity();
   const disabled = !(currentType && currentWorkspace && currentName && schema);
@@ -303,6 +320,7 @@ function Form({
         <TypesSelect
           value={currentType}
           schema={schema}
+          apps={apps}
           onChange={({ typeId }) => {
             setCurrentType(typeId);
           }}

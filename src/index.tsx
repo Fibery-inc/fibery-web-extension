@@ -34,7 +34,27 @@ if (typeof browser !== "undefined" && browser.tabs) {
       const [info] = await browser.tabs.executeScript({
         code: `var info = {
             // @ts-ignore
-            selection: window?.getSelection()?.toString(),
+            selection: (() => {
+              function getSelectionHtml() {
+                var html = "";
+                if (typeof window.getSelection != "undefined") {
+                    var sel = window.getSelection();
+                    if (sel.rangeCount) {
+                        var container = document.createElement("div");
+                        for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+                            container.appendChild(sel.getRangeAt(i).cloneContents());
+                        }
+                        html = container.innerHTML;
+                    }
+                } else if (typeof document.selection != "undefined") {
+                    if (document.selection.type == "Text") {
+                        html = document.selection.createRange().htmlText;
+                    }
+                }
+                return html;
+              }
+              return getSelectionHtml();
+            })(),
             title: document.title,
             url: document.location.toString(),
           };info`,
@@ -62,7 +82,26 @@ if (typeof browser !== "undefined" && browser.tabs) {
         function: () => {
           return {
             // @ts-ignore
-            selection: window?.getSelection()?.toString(),
+            selection: (() => {
+              function getSelectionHtml() {
+                let html = "";
+                if (typeof window.getSelection != "undefined") {
+                  const sel = window.getSelection();
+                  // @ts-ignore
+                  if (sel.rangeCount) {
+                    const container = document.createElement("div");
+                    // @ts-ignore
+                    for (let i = 0, len = sel.rangeCount; i < len; ++i) {
+                      // @ts-ignore
+                      container.appendChild(sel.getRangeAt(i).cloneContents());
+                    }
+                    html = container.innerHTML;
+                  }
+                }
+                return html;
+              }
+              return getSelectionHtml();
+            })(),
             title: document.title,
             url: document.location.toString(),
           };

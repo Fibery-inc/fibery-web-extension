@@ -2,7 +2,6 @@
 const { cp, readFile, writeFile, mkdir } = require("node:fs/promises");
 const { createWriteStream } = require("node:fs");
 const { join } = require("node:path");
-const globby = require("globby");
 const yazl = require("yazl");
 const { buildDir, releaseDir, chromeDist, firefoxDist } = require("./paths");
 
@@ -23,6 +22,7 @@ function archiveFiles({ files, dest, cwd }) {
 }
 
 async function archiveDirectory({ dir, dest }) {
+  const {globby} =  await import("globby");
   const files = await globby(`${dir}/**/*.*`);
   await archiveFiles({ files, dest, cwd: dir });
 }

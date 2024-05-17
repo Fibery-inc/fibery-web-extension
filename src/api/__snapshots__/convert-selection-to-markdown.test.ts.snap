@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`convertSelectionToMarkdown > <p>hello</p><p>world</p> 1`] = `
+"hello
+
+world [test](http://fibery.io/page/#inner) [test](https://fibery.io/inner) [test](https://fibery.io)
+
+![](https://fibery.io/img.jpg)\\
+![](http://fibery.io/page/img.jpg)\\
+![](https://fibery.io/img.jpg) ellow
+"
+`;
