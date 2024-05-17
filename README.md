@@ -4,7 +4,7 @@
 
 Prerequisites: personal account is set up, e.g. `my-account.fibery.io`
 
-1. [Acquire API token](https://api.fibery.io/#authentication)
+1. [Acquire API token](https://the.fibery.io/@public/User_Guide/Guide/REST-API-Authentication-260)
 2. Create `.env` file in root folder with the following content:
 
 ```
