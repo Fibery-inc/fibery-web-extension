@@ -10,6 +10,10 @@ import { User, Schema } from "../types";
 import { AppError } from "../api/api-call";
 import { getTypeName } from "../api/get-type-name";
 import { convertSelectionToMarkdown } from "../api/convert-selection-to-markdown";
+import {
+  getDescriptionField,
+  getDescriptionFieldName,
+} from "../api/get-description-field";
 
 const isMac = navigator?.platform?.startsWith("Mac");
 
@@ -94,7 +98,7 @@ function TypesSelect({
       </span>
       {schema && apps ? (
         <select
-          className="min-w-0 w-56 text-sm mt-0 border-0 rounded focus:bg-gray-100 focus:ring-offset-0 focus:border-gray-100 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
+          className="min-w-0 w-56 text-sm mt-0 border-0 rounded focus:bg-gray-100 focus:ring-offset-0 focus:border-gray-100  focus:ring-gray-100 focus:outline-none"
           value={value}
           onChange={(e) =>
             onChange({
@@ -112,7 +116,7 @@ function TypesSelect({
             return (
               <optgroup key={groupLabel} label={groupLabel}>
                 {types
-                  .filter((type) => false === type.name.endsWith("_deleted"))
+                  .filter((type) => !type.name.endsWith("_deleted"))
                   .map((type) => (
                     <option key={type.id} value={type.id}>
                       {type.name}
@@ -125,7 +129,7 @@ function TypesSelect({
       ) : (
         <select
           disabled
-          className="disabled:opacity-50 min-w-0 w-56 text-sm mt-0 border-0 rounded focus:bg-gray-100 focus:ring-offset-0 focus:border-gray-100 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
+          className="disabled:opacity-50 min-w-0 w-56 text-sm mt-0 border-0 rounded focus:bg-gray-100 focus:ring-offset-0 focus:border-gray-100 focus:ring-gray-100 focus:outline-none"
         >
           <option>Select {typeTerm}</option>
         </select>
@@ -150,6 +154,11 @@ async function getDefaultDescription() {
   ]
     .filter(Boolean)
     .join("\n\n");
+}
+
+function getUrl() {
+  const state = (window as any).fiberyState as any;
+  return state?.url || "";
 }
 
 function Form({
@@ -196,6 +205,7 @@ function Form({
   useEffect(() => {
     inputNameRef.current?.focus();
   }, []);
+  const descriptionField = getDescriptionField({ schema, typeId: currentType });
   return (
     <>
       <div
@@ -217,6 +227,7 @@ function Form({
                 entityName: currentName,
                 schema,
                 description: currentDescription,
+                url: getUrl(),
               },
               {
                 onSuccess({ linkToEntity }) {
@@ -248,7 +259,7 @@ function Form({
           <span className="text-gray-500">Name</span>
           <input
             ref={inputNameRef}
-            className="mt-1 block w-full border-gray-200 p-2 rounded text-sm focus:ring focus:ring-offset-0 focus:border-gray-400 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
+            className="mt-1 block w-full border-gray-200 p-2 rounded text-sm focus:ring focus:ring-offset-0 focus:border-gray-400 focus:ring-gray-100 focus:outline-none"
             value={currentName}
             onChange={(e) => setCurrentName(e.currentTarget.value)}
             type="text"
@@ -257,9 +268,11 @@ function Form({
           />
         </label>
         <label className="block px-4" htmlFor="description">
-          <span className="text-gray-500">Description</span>
+          <span className="text-gray-500">
+            {getDescriptionFieldName(descriptionField)}
+          </span>
           <textarea
-            onKeyPress={(e) => {
+            onKeyDown={(e) => {
               if (
                 e.code.toLowerCase() === "enter" &&
                 !e.shiftKey &&
@@ -268,7 +281,7 @@ function Form({
                 submitButtonRef.current.click();
               }
             }}
-            className="mt-1 max-h-48 block w-full border-gray-200 rounded text-sm focus:ring focus:ring-offset-0 focus:border-gray-400 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
+            className="mt-1 max-h-48 block w-full border-gray-200 rounded text-sm focus:ring focus:ring-offset-0 focus:border-gray-400 focus:ring-gray-100 focus:outline-none"
             value={currentDescription}
             onChange={(e) => {
               setCurrentDescription(e.currentTarget.value);
@@ -303,7 +316,7 @@ function Form({
             Workspace
           </span>
           <select
-            className="min-w-0 w-56 text-sm mt-0 border-0 rounded focus:bg-gray-100 focus:ring-offset-0 focus:border-gray-100 focus:ring-gray-100 focus:ring-gray-100 focus:outline-none"
+            className="min-w-0 w-56 text-sm mt-0 border-0 rounded focus:bg-gray-100 focus:ring-offset-0 focus:border-gray-100 focus:ring-gray-100 focus:outline-none"
             onChange={(e) => setCurrentWorkspace(e.currentTarget.value)}
             value={currentWorkspace}
             name="workspace"

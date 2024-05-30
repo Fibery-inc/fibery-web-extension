@@ -6,11 +6,13 @@ export type User = {
   lastUsedTypeName?: string;
 };
 
-type FiberyField = {
+export type FiberyField = {
   "fibery/meta": {
     "ui/title?"?: boolean;
+    "ui/type"?: "url";
   };
   "fibery/name": string;
+  "fibery/type": "Collaboration~Documents/Document" | string;
 };
 
 export type FiberyType = {

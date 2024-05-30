@@ -4,6 +4,7 @@ import { setValue } from "./storage.api";
 import { getLink } from "./get-link";
 import { getTypeName } from "./get-type-name";
 import { User, Schema, Entity } from "../types";
+import { getDescriptionField } from "./get-description-field";
 
 export function useMe() {
   return useQuery<User>(["me"], () => getMe());
@@ -62,9 +63,11 @@ const createEntityCommands = ({
   typeId,
   schema,
   entityName,
+  url,
 }: {
   typeId: string;
   entityName: string;
+  url: string;
   schema: Schema;
 }) => {
   const type = schema["fibery/types"].find((type) => {
@@ -79,6 +82,9 @@ const createEntityCommands = ({
   if (!titleField) {
     throw Error(`Type ${type["fibery/name"]} doesn't have title field`);
   }
+  const urlField = type["fibery/fields"].find((field) => {
+    return field["fibery/meta"]["ui/type"] === "url";
+  });
   return [
     {
       command: "fibery.entity/create",
@@ -86,6 +92,7 @@ const createEntityCommands = ({
         type: type["fibery/name"],
         entity: {
           [titleField["fibery/name"]]: entityName,
+          ...(urlField && { [urlField["fibery/name"]]: url }),
         },
       },
     },
@@ -100,11 +107,13 @@ export function useCreateEntity() {
       description,
       typeId,
       schema,
+      url,
     }: {
       host: string;
       entityName: string;
       description: string;
       typeId: string;
+      url: string;
       schema: Schema;
     }) => {
       const type = schema["fibery/types"].find((type) => {
@@ -113,21 +122,19 @@ export function useCreateEntity() {
       if (!type) {
         throw Error("Could not find type in fibery schema");
       }
-      const descriptionField = type["fibery/fields"].find((field) => {
-        return field["fibery/name"]
-          .toLowerCase()
-          .trim()
-          .endsWith("description");
-      });
+      const descriptionField = getDescriptionField({ schema, typeId });
       await setValue("lastUsedType", typeId);
       await setValue("lastUsedWorkspace", host);
       await setValue("lastUsedTypeName", getTypeName({ schema, typeId }));
       const entity = await executeCommands<Entity>({
         host,
-        commands: createEntityCommands({ typeId, entityName, schema }),
+        commands: createEntityCommands({ typeId, entityName, schema, url }),
       });
 
-      if (descriptionField) {
+      if (
+        descriptionField &&
+        descriptionField["fibery/type"] === "Collaboration~Documents/Document"
+      ) {
         const entityWithDocumentSecret = await executeCommands<Entity>({
           host,
           commands: [
