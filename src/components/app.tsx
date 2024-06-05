@@ -55,7 +55,9 @@ function getTypes(schema: Schema) {
     if (
       type["fibery/meta"]["fibery/domain?"] &&
       type["fibery/name"] !== "fibery/user" &&
-      !type["fibery/meta"]["sync/source"]
+      !type["fibery/deleted?"] &&
+      !type["fibery/meta"]["sync/source"] &&
+      !type["fibery/meta"]["fibery/highlight?"]
     ) {
       const [groupLabel, name] = type["fibery/name"].split("/");
       const typeOption = { id: type["fibery/id"], name };

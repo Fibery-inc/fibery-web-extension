@@ -1,7 +1,7 @@
 import { apiCall, AppError, unknownErrorMessage } from "./api-call";
 import { getValue } from "./storage.api";
 import { getHttpProtocol } from "./get-http-protocol";
-import { User } from "../types";
+import { Schema, User } from "../types";
 
 const meUrl = `${import.meta.env.VITE_APP_HOST || ""}/api/users/me`;
 const getBaseApiUrl = (host: string) => `${getHttpProtocol()}${host}/api/`;
@@ -49,6 +49,15 @@ type ErrorResult = {
   success: false;
   result: { message: string };
 };
+
+export async function getSchema(host: string) {
+  return apiCall<Schema>(
+    `${getBaseApiUrl(
+      host
+    )}schema?with-description=false&with-soft-deleted=false`,
+    { method: "GET" }
+  );
+}
 
 export function executeCommands<T>({
   host,

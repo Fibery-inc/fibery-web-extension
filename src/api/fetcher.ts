@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "react-query";
-import { getMe, executeCommands, updateDocument } from "./api";
+import { getMe, executeCommands, updateDocument, getSchema } from "./api";
 import { setValue } from "./storage.api";
 import { getLink } from "./get-link";
 import { getTypeName } from "./get-type-name";
@@ -10,14 +10,10 @@ export function useMe() {
   return useQuery<User>(["me"], () => getMe());
 }
 
-const schemaPayload = [{ command: "fibery.schema/query", args: {} }];
 export function useSchema(host?: string) {
   return useQuery(
-    [...schemaPayload, host],
-    () =>
-      host
-        ? executeCommands<Schema>({ host, commands: schemaPayload })
-        : Promise.resolve(undefined),
+    ["schema", host],
+    () => (host ? getSchema(host) : Promise.resolve(undefined)),
     {
       enabled: Boolean(host),
     }
