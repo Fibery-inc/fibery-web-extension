@@ -1,6 +1,6 @@
 export type User = {
   email: string;
-  workspaces: Array<{ name: string }>;
+  workspaces: Array<{ name: string; title: string }>;
   lastUsedWorkspace?: string;
   lastUsedType?: string;
   lastUsedTypeName?: string;

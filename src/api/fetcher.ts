@@ -79,7 +79,10 @@ const createEntityCommands = ({
     throw Error(`Type ${type["fibery/name"]} doesn't have title field`);
   }
   const urlField = type["fibery/fields"].find((field) => {
-    return field["fibery/meta"]["ui/type"] === "url";
+    return (
+      field["fibery/meta"]["ui/type"] === "url" ||
+      field["fibery/type"] === "fibery/url"
+    );
   });
   return [
     {

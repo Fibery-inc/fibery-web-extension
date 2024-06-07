@@ -13,7 +13,7 @@ const getCommandApiUrl = (host: string) => {
 export async function getMe(): Promise<User> {
   const me = await apiCall<{
     email: string;
-    workspaces: Array<{ name: string }>;
+    workspaces: Array<{ name: string; title: string }>;
   }>(meUrl, { method: "GET" });
   return {
     ...me,

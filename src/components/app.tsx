@@ -74,11 +74,6 @@ function getTypes(schema: Schema) {
   return typesByGroup;
 }
 
-function getWorkspaceName(host: string) {
-  const [name] = host.split(".");
-  return name;
-}
-
 function TypesSelect({
   onChange,
   value,
@@ -325,9 +320,9 @@ function Form({
             id="workspace"
           >
             <option value="">Select Workspace</option>
-            {me.workspaces.map(({ name }) => (
+            {me.workspaces.map(({ name, title }) => (
               <option key={name} value={name}>
-                {getWorkspaceName(name)}
+                {title}
               </option>
             ))}
           </select>
