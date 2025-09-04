@@ -26,7 +26,7 @@ export default defineConfig({
               res.write(
                 JSON.stringify({
                   email: "test@test.com",
-                  workspaces: [{ name: req.headers.host }],
+                  workspaces: [{ name: req.headers.host, title: REMOTE_HOST }],
                 })
               );
               res.end();
