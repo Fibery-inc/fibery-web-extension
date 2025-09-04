@@ -47,7 +47,7 @@ function Shortcuts() {
 function getTypes(schema: Schema) {
   const typesByGroup: Array<{
     groupLabel: string;
-    types: Array<{ name: string; id: string }>;
+    types: Array<{ name: string; id: string; fullName: string }>;
   }> = [];
   const indexByGroup: Record<string, number> = {};
   let index = 0;
@@ -60,7 +60,11 @@ function getTypes(schema: Schema) {
       !type["fibery/meta"]["fibery/highlight?"]
     ) {
       const [groupLabel, name] = type["fibery/name"].split("/");
-      const typeOption = { id: type["fibery/id"], name };
+      const typeOption = {
+        id: type["fibery/id"],
+        name,
+        fullName: type["fibery/name"],
+      };
       const groupIndex = indexByGroup[groupLabel];
       if (groupIndex !== undefined && typesByGroup[groupIndex]) {
         typesByGroup[groupIndex].types.push(typeOption);
@@ -83,7 +87,7 @@ function TypesSelect({
   onChange: ({ typeId }: { typeId: string }) => void;
   value?: string;
   schema?: Schema;
-  apps?: Record<string, unknown>;
+  apps?: Record<string, string[]>;
 }) {
   return (
     <label
@@ -107,13 +111,16 @@ function TypesSelect({
         >
           <option value="">Select {typeTerm}</option>
           {getTypes(schema).map(({ groupLabel, types }) => {
-            if (!apps[groupLabel]) {
+            const app = apps[groupLabel];
+            if (!app) {
               return null;
             }
             return (
               <optgroup key={groupLabel} label={groupLabel}>
                 {types
-                  .filter((type) => !type.name.endsWith("_deleted"))
+                  .filter((type) => {
+                    return app.includes(type.fullName);
+                  })
                   .map((type) => (
                     <option key={type.id} value={type.id}>
                       {type.name}

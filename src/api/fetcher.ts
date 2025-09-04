@@ -28,17 +28,24 @@ export function useGetAvailableApps(host?: string) {
         ? executeCommands<Record<string, string[]>>({
             host,
             commands: [
-              { command: "fibery.app/query-user-capabilities", args: {} },
+              {
+                command: "fibery.type/query-user-capabilities",
+                args: {
+                  capabilities: ["entity.create"],
+                },
+              },
             ],
             returnFirstResult: false,
           }).then((data) => {
-            return Object.fromEntries(
-              Object.entries(data)
-                .filter(([, capabilities]) =>
-                  capabilities.includes("entity.create")
-                )
-                .map(([appName]) => [appName, appName])
-            );
+            const apps: Record<string, string[]> = {};
+            Object.entries(data).forEach(([typeName]) => {
+              const appName = typeName.split("/")[0];
+              if (!apps[appName]) {
+                apps[appName] = [];
+              }
+              apps[appName].push(typeName);
+            });
+            return apps;
           })
         : Promise.resolve(undefined),
     {
