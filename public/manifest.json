@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "version": "1.0.8",
+  "version": "1.0.10",
   "name": "Fibery Browser Extension",
   "description": "Use Fibery Extension to create Entities — Competitors, Pages, Tickets — right from a web page",
   "icons": {
@@ -30,12 +30,6 @@
     "default_popup": "index.html",
     "default_title": "Save to Fibery"
   },
-  "permissions": [
-    "activeTab",
-    "scripting",
-    "storage"
-  ],
-  "host_permissions": [
-    "https://*.fibery.io/*"
-  ]
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["https://*.fibery.io/*"]
 }

@@ -26,8 +26,15 @@ if (typeof browser !== "undefined" && browser.browserAction) {
     title,
   });
 }
-// @ts-ignore
-if (typeof browser !== "undefined" && browser.tabs) {
+
+if (
+  // @ts-ignore
+  typeof browser !== "undefined" &&
+  // @ts-ignore
+  browser.tabs &&
+  // @ts-ignore
+  browser.tabs.executeScript
+) {
   (async () => {
     try {
       // @ts-ignore
